@@ -1,5 +1,7 @@
 import enum
+
 import Enums
+from Component import Component
 
 
 class GameObject:
@@ -9,24 +11,27 @@ class GameObject:
 
 
     def __init__(self, layer = Enums.LayerType.Non):
+        self.components : list[Component] = [None for _ in range(Enums.ComponentType.End.value)]
         self.state = self.State.Alive
         self.layer = layer
         pass
 
     def Update(self):
-
+        for component in self.components:
+            if component is None: continue
+            component.Update()
         pass
 
     def LateUpdate(self):
-
+        for component in self.components:
+            if component is None: continue
+            component.LateUpdate()
         pass
 
     def Render(self):
-
-        pass
-
-    def Destroy(self):
-
+        for component in self.components:
+            if component is None: continue
+            component.Render()
         pass
 
     def SetState(self, state): self.state = state

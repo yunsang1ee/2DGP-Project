@@ -1,10 +1,12 @@
+from Scene import Scene
+
+
 class Application:
     def __init__(self):
-
+        self.scenes : dict[str, Scene] = {}
         pass
 
     def Init(self):
-
         pass
 
     def Input(self):
@@ -37,3 +39,13 @@ class Application:
     def Release(self):
 
         pass
+
+    def CreateScene(self, name, scene):
+        self.scenes[name] = scene
+        pass
+
+    def LoadScene(self, name, scene):
+        self.scenes[name] = scene
+        pass
+
+app = Application()

@@ -1,8 +1,6 @@
 from pico2d import *
 
-from Application import Application
-
-app = Application()
+from Application import app
 
 def main():
     open_canvas()
