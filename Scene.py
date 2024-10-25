@@ -1,4 +1,6 @@
 import GameObject
+from InputManager import inputManager
+
 
 # Layer by layer CollisionCheck
 class Scene:
@@ -10,8 +12,11 @@ class Scene:
         for obj in self.objects:
             if obj.GetState() is GameObject.GameObject.State.Alive:
                 obj.Update()
-        pass
 
+        if(inputManager.GetKeyDown('a')): print('Down a')
+        if(inputManager.GetKey('a')): print('Pressed a')
+        if(inputManager.GetKeyUp('a')): print('Up a')
+        pass
     def LateUpdate(self):
         for obj in self.objects:
             if obj.GetState() is GameObject.GameObject.State.Alive:
@@ -29,6 +34,12 @@ class Scene:
         for obj in self.objects:
             if obj.GetState() is GameObject.GameObject.State.Dead:
                 self.objects.remove(obj)
+        pass
+
+    def OnEnter(self):
+        pass
+
+    def OnExit(self):
         pass
 
     def AddObject(self, obj):
