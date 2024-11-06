@@ -1,5 +1,6 @@
-import GameObject
-from InputManager import inputManager
+from abc import abstractmethod
+
+from framework.GameObject import GameObject
 
 
 # Layer by layer CollisionCheck
@@ -8,21 +9,21 @@ class Scene:
         self.objects : list[GameObject] = []
         pass
 
+    @abstractmethod
     def Update(self):
         for obj in self.objects:
             if obj.GetState() is GameObject.GameObject.State.Alive:
                 obj.Update()
-
-        if(inputManager.GetKeyDown('a')): print('Down a')
-        if(inputManager.GetKey('a')): print('Pressed a')
-        if(inputManager.GetKeyUp('a')): print('Up a')
         pass
+
+    @abstractmethod
     def LateUpdate(self):
         for obj in self.objects:
             if obj.GetState() is GameObject.GameObject.State.Alive:
                 obj.LateUpdate()
         pass
 
+    @abstractmethod
     def Render(self):
         #self.objects.sort()
         for obj in self.objects:
@@ -30,15 +31,18 @@ class Scene:
                 obj.Render()
         pass
 
+    @abstractmethod
     def Destroy(self):
         for obj in self.objects:
             if obj.GetState() is GameObject.GameObject.State.Dead:
                 self.objects.remove(obj)
         pass
 
+    @abstractmethod
     def OnEnter(self):
         pass
 
+    @abstractmethod
     def OnExit(self):
         pass
 

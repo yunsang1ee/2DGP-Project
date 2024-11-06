@@ -19,3 +19,4 @@ class ComponentType(enum.Enum):
     Animation = enum.auto()
     Camera = enum.auto()
     End = enum.auto()
+    pass

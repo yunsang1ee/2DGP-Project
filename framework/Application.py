@@ -1,9 +1,9 @@
 from pico2d import *
 from pygame import Vector2
 
-from Scene import Scene
-from InputManager import inputManager
-from Timer import timer
+from framework.Scene import Scene
+from framework.Common.InputManager import inputManager
+from framework.Common.Timer import timer
 
 
 class Application:
@@ -39,17 +39,17 @@ class Application:
         return True
 
     def Run(self):
-        self.HandleEvents()
+        self.HandleEvents() # Event Processing
 
-        inputManager.BeforeUpdate()
-        timer.Update()
-        timer.GetDeltaTime()
-        print(timer.GetCurrentFrameNum())
+        inputManager.BeforeUpdate()         # Input PreProcessing
+        timer.Update()                      # Target Frame Lock
+
         self.Update()
         self.LateUpdate()
         self.Render()
         self.Destroy()
-        inputManager.AfterUpdate()
+
+        inputManager.AfterUpdate()          # Input PostProcessing
         pass
 
     def Update(self):
@@ -73,15 +73,15 @@ class Application:
         pass
 
     def CreateScene(self, name, scene : Scene):
-        if(self.__scenes.get(name) != None): sys.exit("Exist this key")
+        if self.__scenes.get(name) is not None: sys.exit("Exist this key")
 
         self.__scenes[name] = scene
         pass
 
     def LoadScene(self, name):
-        if(self.__scenes.get(name) == None): sys.exit("Not found scene")
+        if self.__scenes.get(name) is None: sys.exit("Not found scene")
 
-        if(self.activeScene != None): self.activeScene.OnExit()
+        if self.activeScene is not None: self.activeScene.OnExit()
         self.activeScene = self.__scenes[name]
         self.activeScene.OnEnter()
         pass
