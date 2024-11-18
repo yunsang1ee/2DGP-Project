@@ -6,6 +6,20 @@ from framework.Common.InputManager import inputManager
 from framework.Common.Timer import timer
 
 
+def HandleEvents():
+    events = get_events()
+    if len(events) == 0: return False
+
+    for event in events:
+        if event.type == SDL_QUIT:
+            sys.exit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            sys.exit()
+        else:
+            inputManager.EventProcessing(event)
+    return True
+
+
 class Application:
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "_instance"):
@@ -24,22 +38,9 @@ class Application:
     def Init(self, width, height):
         self.screen = width, height
         pass
-
-    def HandleEvents(self):
-        events = get_events()
-        if len(events) == 0: return False
-
-        for event in events:
-            if event.type == SDL_QUIT:
-                sys.exit()
-            elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-                sys.exit()
-            else:
-                inputManager.EventProcessing(event)
-        return True
-
+    
     def Run(self):
-        self.HandleEvents() # Event Processing
+        HandleEvents() # Event Processing
 
         inputManager.BeforeUpdate()         # Input PreProcessing
         timer.Update()                      # Target Frame Lock

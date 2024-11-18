@@ -11,6 +11,13 @@ class LayerType(enum.Enum):
     End = enum.auto()
     pass
 
+class ColliderType(enum.Enum):
+    Non = 0
+    Box2D = enum.auto()
+    Circle = enum.auto()
+    End = enum.auto()
+    pass
+
 class ComponentType(enum.Enum):
     Transform = 0
     Collider = enum.auto()

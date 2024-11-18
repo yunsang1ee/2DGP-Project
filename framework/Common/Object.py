@@ -15,3 +15,6 @@ def Instantiate(layer : LayerType, vec2 : Vector2 = None):
 		
 	app.activeScene.AddObject(newObject)
 	return newObject
+
+def Destroy(object : GameObject):
+	object.state = GameObject.State.Dead

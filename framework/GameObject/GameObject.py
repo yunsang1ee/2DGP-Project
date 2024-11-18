@@ -1,12 +1,12 @@
 import enum
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 from typing import Dict
 from framework.Common import Enums
 from framework.Component import Component
 
 
-class GameObject:
+class GameObject(ABC):
     class State(enum.Enum):
         Alive = 0; Paused = 1; Dead = 2
         pass

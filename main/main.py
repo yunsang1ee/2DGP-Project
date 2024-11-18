@@ -1,7 +1,7 @@
 from pico2d import *
 
 from framework.Application import app
-from main.Scene.mainScene import MainScene
+from Scene.mainScene import MainScene
 
 
 def main():

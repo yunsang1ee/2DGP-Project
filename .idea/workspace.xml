@@ -4,23 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="New :&#10;InputManager, Timer&#10;&#10;Modified:&#10;Application -&gt; Switch scene&#10;&#10;Feature:&#10;Application, InputManager, Timer : Singleton">
-      <change afterPath="$PROJECT_DIR$/framework/Common/Object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/Component/Collider.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/Component/Component.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/Component/Script.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/Component/Transform.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/GameObject/GameObject.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main/Scene/mainScene.py" afterDir="false" />
+    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="New :&#10;mainScene(Scene) : initial&#10;Transform(component) : complete&#10;Script(component) : initial&#10;Collider(component) : pre-stage&#10;Object : complete&#10;  Object Instantiate&#10;&#10;&#10;Modified:&#10;gameObject(owner) &lt;-&gt; Component&#10;file &amp; directory refactoring&#10;&#10;Feature:&#10;Component pattern">
+      <change afterPath="$PROJECT_DIR$/framework/Component/Collider/CollisionManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Application.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Component.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Enums.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameObject.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/InputManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scene.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Scene/Scene.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Timer.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Timer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Application.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Application.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Common/Enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Enums.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Common/InputManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/InputManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Common/Object.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Object.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Component/Collider.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/Collider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Component/Component.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Component.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Component/Script.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/GameObject/GameObject.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/GameObject/GameObject.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Scene/Scene.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Scene/Scene.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/Scene/mainScene.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/Scene/mainScene.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,10 +68,10 @@
     "Python.GameObject.executor": "Run",
     "Python.InputManager.executor": "Run",
     "Python.Scene.executor": "Run",
-    "Python.main.executor": "Run",
+    "Python.main.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/user/PycharmProjects/2DGP-Project/framework/Component",
+    "last_opened_file_path": "C:/Users/user/PycharmProjects/2DGP-Project",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -90,11 +87,11 @@
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\framework\Component\Collider" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\main\Scene" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\main" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\framework\GameObject" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\framework" />
-      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\Common" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
@@ -253,7 +250,12 @@
       <workItem from="1730770538331" duration="5849000" />
       <workItem from="1730782455320" duration="1525000" />
       <workItem from="1730783998762" duration="124000" />
-      <workItem from="1730802732510" duration="23178000" />
+      <workItem from="1730802732510" duration="23526000" />
+      <workItem from="1731298508522" duration="44000" />
+      <workItem from="1731299850983" duration="1425000" />
+      <workItem from="1731616797169" duration="7571000" />
+      <workItem from="1731659829916" duration="3578000" />
+      <workItem from="1731854763973" duration="19612000" />
     </task>
     <task id="LOCAL-00001" summary="2DGP 1차발표 자료 2021180026 이윤상">
       <option name="closed" value="true" />
@@ -303,7 +305,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729817978428</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="New :&#10;mainScene(Scene) : initial&#10;Transform(component) : complete&#10;Script(component) : initial&#10;Collider(component) : pre-stage&#10;Object : complete&#10;  Object Instantiate&#10;&#10;&#10;Modified:&#10;gameObject(owner) &lt;-&gt; Component&#10;file &amp; directory refactoring&#10;&#10;Feature:&#10;Component pattern">
+      <option name="closed" value="true" />
+      <created>1730906731592</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1730906731592</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -328,7 +338,8 @@
     <MESSAGE value="Add Component Pattern" />
     <MESSAGE value="New :&#10;InputManager&#10;&#10;Modified:&#10;Application -&gt; Switch scene&#10;&#10;Feature:&#10;Application, InputManager : Singleton" />
     <MESSAGE value="New :&#10;InputManager, Timer&#10;&#10;Modified:&#10;Application -&gt; Switch scene&#10;&#10;Feature:&#10;Application, InputManager, Timer : Singleton" />
-    <option name="LAST_COMMIT_MESSAGE" value="New :&#10;InputManager, Timer&#10;&#10;Modified:&#10;Application -&gt; Switch scene&#10;&#10;Feature:&#10;Application, InputManager, Timer : Singleton" />
+    <MESSAGE value="New :&#10;mainScene(Scene) : initial&#10;Transform(component) : complete&#10;Script(component) : initial&#10;Collider(component) : pre-stage&#10;Object : complete&#10;  Object Instantiate&#10;&#10;&#10;Modified:&#10;gameObject(owner) &lt;-&gt; Component&#10;file &amp; directory refactoring&#10;&#10;Feature:&#10;Component pattern" />
+    <option name="LAST_COMMIT_MESSAGE" value="New :&#10;mainScene(Scene) : initial&#10;Transform(component) : complete&#10;Script(component) : initial&#10;Collider(component) : pre-stage&#10;Object : complete&#10;  Object Instantiate&#10;&#10;&#10;Modified:&#10;gameObject(owner) &lt;-&gt; Component&#10;file &amp; directory refactoring&#10;&#10;Feature:&#10;Component pattern" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -347,6 +358,6 @@
     <SUITE FILE_PATH="coverage/main_py$InputManager.coverage" NAME="InputManager Coverage Results" MODIFIED="1729814157361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$Application.coverage" NAME="Application Coverage Results" MODIFIED="1729817860374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$GameObject.coverage" NAME="GameObject Coverage Results" MODIFIED="1729798220032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1730770555724" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1731875175657" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

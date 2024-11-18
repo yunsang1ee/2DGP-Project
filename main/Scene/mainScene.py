@@ -1,9 +1,7 @@
-from abc import ABC
-
 from framework.Scene import Scene
 
 
-class MainScene(Scene, ABC):
+class MainScene(Scene.Scene):
 	def __init__(self):
 		super().__init__()
 		pass

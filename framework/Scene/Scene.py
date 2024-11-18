@@ -1,5 +1,6 @@
 from abc import abstractmethod
 
+from framework.Common import Enums
 from framework.GameObject import GameObject
 
 
@@ -45,20 +46,22 @@ class Scene:
     @abstractmethod
     def OnExit(self):
         pass
-
+  
     def AddObject(self, obj):
-        if isinstance(obj, GameObject):
+        if isinstance(obj, GameObject.GameObject):
             self.objects.append(obj)
         else:
             print("Object is not a GameObject")
         pass
 
     def EraseObject(self, obj):
-        if isinstance(obj, GameObject):
+        if isinstance(obj, GameObject.GameObject):
             self.objects.remove(obj)
         else:
             print("Object is not a GameObject")
         pass
 
+    def GetGameObjects(self, layer : Enums.LayerType) -> list[GameObject]:
+        return [obj for obj in self.objects if obj.GetLayer() == layer]
 
     pass
