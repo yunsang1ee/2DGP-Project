@@ -1,4 +1,5 @@
 from pico2d import load_image, Image
+from pygame import Vector2
 
 from framework.Common import Object, Enums
 from framework.Component.Collider.BoxCollider2D import BoxCollider2D
@@ -78,9 +79,10 @@ class MainScene(Scene.Scene):
 		from framework.Application import app
 		player : GameObject = Object.Instantiate(Enums.LayerType.Player, app.screen // 2)
 		cd : BoxCollider2D = player.AddComponent(BoxCollider2D)
+		cd.SetOffset(Vector2(10, 0))
+		cd.SetSize(Vector2(0.62, 0.72))
 		sc : LumberjackScript = player.AddComponent(LumberjackScript)
-		sp : Sprite = player.AddComponent(Sprite)
-		sp.SetImage("../resource/Tree.png")
+		#sp : Sprite = player.AddComponent(Sprite)
 		pass
 	
 	def OnExit(self):

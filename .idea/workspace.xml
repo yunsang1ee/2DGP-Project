@@ -4,36 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="New :&#10;CollisionManager :&#10;  Collision Managed by layer&#10;&#10;Modified:&#10;Enums :&#10;  ColliderType&#10;  &#10;Collider(component) : &#10;  ID hash&#10;  CollisionEvents&#10;  Attribute Get/Set&#10;  Render flag&#10;  &#10;&#10;Feature:&#10;Collision System">
-      <change afterPath="$PROJECT_DIR$/framework/Component/Collider/BoxCollider2D.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/Component/Collider/CircleCollider.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/game/Scene/mainScene.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/game/Script/LumberjackScript.py" afterDir="false" />
+    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="New :&#10;BoxCollider2D&#10;CircleCollider&#10;LumberjackScript&#10;&#10;Modified:&#10;&#10;&#10;Feature:">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Application.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Application.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Common/Enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Enums.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Common/Object.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Object.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/Collider.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/Collider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/CollisionManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/CollisionManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Component.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Component.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Script.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Script.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Transform.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Transform.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/GameObject/GameObject.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/GameObject/GameObject.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Scene/Scene.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Scene/Scene.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/Scene/mainScene.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Chopper.png" beforeDir="false" afterPath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Chopper.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Demon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Egg.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Empty Barrel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Energy Sphere.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Generator.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Juggernaut.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Medkit.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Warthog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/Mobile - Dead Ahead Zombie Warfare - Zombie.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/PC Computer - Dont Starve Dont Starve Together - Evergreens.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resource/images.png" beforeDir="false" afterPath="$PROJECT_DIR$/resource/images.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Death Around.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/Death Around.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/BoxCollider2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/BoxCollider2D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/Scene/mainScene.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Scene/mainScene.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -272,7 +247,7 @@
       <workItem from="1731299850983" duration="1425000" />
       <workItem from="1731616797169" duration="7571000" />
       <workItem from="1731659829916" duration="3578000" />
-      <workItem from="1731854763973" duration="40850000" />
+      <workItem from="1731854763973" duration="43505000" />
     </task>
     <task id="LOCAL-00001" summary="2DGP 1차발표 자료 2021180026 이윤상">
       <option name="closed" value="true" />
@@ -338,7 +313,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731907556920</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="New :&#10;BoxCollider2D&#10;CircleCollider&#10;LumberjackScript&#10;&#10;Modified:&#10;&#10;&#10;Feature:">
+      <option name="closed" value="true" />
+      <created>1731939854225</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1731939854225</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -365,7 +348,8 @@
     <MESSAGE value="New :&#10;InputManager, Timer&#10;&#10;Modified:&#10;Application -&gt; Switch scene&#10;&#10;Feature:&#10;Application, InputManager, Timer : Singleton" />
     <MESSAGE value="New :&#10;mainScene(Scene) : initial&#10;Transform(component) : complete&#10;Script(component) : initial&#10;Collider(component) : pre-stage&#10;Object : complete&#10;  Object Instantiate&#10;&#10;&#10;Modified:&#10;gameObject(owner) &lt;-&gt; Component&#10;file &amp; directory refactoring&#10;&#10;Feature:&#10;Component pattern" />
     <MESSAGE value="New :&#10;CollisionManager :&#10;  Collision Managed by layer&#10;&#10;Modified:&#10;Enums :&#10;  ColliderType&#10;  &#10;Collider(component) : &#10;  ID hash&#10;  CollisionEvents&#10;  Attribute Get/Set&#10;  Render flag&#10;  &#10;&#10;Feature:&#10;Collision System" />
-    <option name="LAST_COMMIT_MESSAGE" value="New :&#10;CollisionManager :&#10;  Collision Managed by layer&#10;&#10;Modified:&#10;Enums :&#10;  ColliderType&#10;  &#10;Collider(component) : &#10;  ID hash&#10;  CollisionEvents&#10;  Attribute Get/Set&#10;  Render flag&#10;  &#10;&#10;Feature:&#10;Collision System" />
+    <MESSAGE value="New :&#10;BoxCollider2D&#10;CircleCollider&#10;LumberjackScript&#10;&#10;Modified:&#10;&#10;&#10;Feature:" />
+    <option name="LAST_COMMIT_MESSAGE" value="New :&#10;BoxCollider2D&#10;CircleCollider&#10;LumberjackScript&#10;&#10;Modified:&#10;&#10;&#10;Feature:" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -384,6 +368,6 @@
     <SUITE FILE_PATH="coverage/main_py$InputManager.coverage" NAME="InputManager Coverage Results" MODIFIED="1729814157361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$Application.coverage" NAME="Application Coverage Results" MODIFIED="1729817860374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$GameObject.coverage" NAME="GameObject Coverage Results" MODIFIED="1729798220032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1731939469485" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1731941747577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
