@@ -5,13 +5,16 @@ from framework.Component.Transform import Transform
 from framework.GameObject.GameObject import GameObject
 from framework.Application import app
 
-def Instantiate(layer : LayerType, vec2 : Vector2 = None):
+def Instantiate(layer : LayerType, position : Vector2 = None, rotation : float = None) -> GameObject:
 	newObject = GameObject()
 	newObject.layer = layer
 	
-	if vec2 is not None:
+	if position is not None:
 		tr : Transform = newObject.AddComponent(Transform)
-		tr.SetPosition(vec2)
+		tr.SetPosition(position)
+		
+		if rotation is not None:
+			tr.SetRotation(rotation)
 		
 	app.activeScene.AddObject(newObject)
 	return newObject

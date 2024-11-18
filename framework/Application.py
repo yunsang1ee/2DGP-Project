@@ -1,6 +1,7 @@
 from pico2d import *
 from pygame import Vector2
 
+from framework.Component.Collider.CollisionManager import CollisionManager
 from framework.Scene import Scene
 from framework.Common.InputManager import inputManager
 from framework.Common.Timer import timer
@@ -36,7 +37,7 @@ class Application:
         cls._init = True
 
     def Init(self, width, height):
-        self.screen = width, height
+        self.screen = Vector2(width, height)
         pass
     
     def Run(self):
@@ -54,16 +55,20 @@ class Application:
         pass
 
     def Update(self):
+        CollisionManager.Update()
         self.activeScene.Update()
-
         pass
 
     def LateUpdate(self):
+        CollisionManager.LateUpdate()
         self.activeScene.LateUpdate()
         pass
 
     def Render(self):
+        clear_canvas()
+        CollisionManager.Render()
         self.activeScene.Render()
+        update_canvas()
         pass
 
     def Destroy(self):

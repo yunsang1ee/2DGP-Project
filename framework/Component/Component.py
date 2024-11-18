@@ -22,6 +22,6 @@ class Component(ABC):
     def Render(self):
         pass
     
-    def SetOwner(self, owner): self.ownerObject = owner
+    def SetOwner(self, owner) -> None: self.ownerObject = owner
     def GetOwner(self): return self.ownerObject
     def GetType(self) -> ComponentType: return self.type

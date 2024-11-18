@@ -1,11 +1,10 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 from framework.Common.Enums import ComponentType
-from framework.Component.Collider.Collider import Collider
 from framework.Component.Component import Component
 
 
-class Script(Component):
+class Script(Component, ABC):
     def __init__(self):
         super().__init__(ComponentType.Script)
         pass
@@ -23,14 +22,14 @@ class Script(Component):
         pass
     
     @abstractmethod
-    def OnCollisionEnter(self, other : Collider):
+    def OnCollisionEnter(self, other : 'Collider'):
         pass
     
     @abstractmethod
-    def OnCollisionStay(self, other : Collider):
+    def OnCollisionStay(self, other : 'Collider'):
         pass
     
     @abstractmethod
-    def OnCollisionExit(self, other : Collider):
+    def OnCollisionExit(self, other : 'Collider'):
         pass
     

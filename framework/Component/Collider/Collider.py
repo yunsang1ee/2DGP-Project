@@ -4,6 +4,7 @@ from pygame import Vector2
 
 from framework.Common import Enums
 from framework.Common.Enums import ComponentType
+from framework.Common.InputManager import inputManager
 from framework.Component import Script
 from framework.Component.Component import Component
 
@@ -16,7 +17,7 @@ class Collider(Component, ABC):
         super().__init__(ComponentType.Collider)
         self.__type : Enums.ColliderType = type
         self.__offset : Vector2 = Vector2(0, 0)
-        self.__size : Vector2 = Vector2(0, 0)
+        self.__size : Vector2 = Vector2(1, 1)
         self.__id = Collider.collisionID; Collider.collisionID += 1
         pass
     
@@ -40,19 +41,16 @@ class Collider(Component, ABC):
     def Render(self):
         pass
     
-    @abstractmethod
     def OnCollisionEnter(self, other: 'Collider'):
         sc : Script = self.GetOwner().GetComponent(ComponentType.Script)
         sc.OnCollisionEnter(other)
         pass
     
-    @abstractmethod
     def OnCollisionStay(self, other: 'Collider'):
         sc : Script = self.GetOwner().GetComponent(ComponentType.Script)
         sc.OnCollisionStay(other)
         pass
     
-    @abstractmethod
     def OnCollisionExit(self, other: 'Collider'):
         sc : Script = self.GetOwner().GetComponent(ComponentType.Script)
         sc.OnCollisionExit(other)
@@ -85,3 +83,7 @@ class Collider(Component, ABC):
     @staticmethod
     def SetRender(flag : bool):
         Collider.__isRendering = flag
+        
+    @staticmethod
+    def isRender():
+        return Collider.__isRendering

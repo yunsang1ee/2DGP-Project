@@ -1,10 +1,10 @@
 from pygame import Vector2
 
-from Component import Component
+from framework.Component import Component
 from framework.Common.Enums import ComponentType
 
 
-class Transform(Component):
+class Transform(Component.Component):
     def __init__(self):
         super().__init__(ComponentType.Transform)
         self.__position : Vector2 = Vector2(0, 0)

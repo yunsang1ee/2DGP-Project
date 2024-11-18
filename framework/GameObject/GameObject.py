@@ -1,12 +1,11 @@
 import enum
-from abc import abstractmethod, ABC
 
 from typing import Dict
 from framework.Common import Enums
 from framework.Component import Component
 
 
-class GameObject(ABC):
+class GameObject:
     class State(enum.Enum):
         Alive = 0; Paused = 1; Dead = 2
         pass
@@ -18,31 +17,29 @@ class GameObject(ABC):
         self.layer = layer
         pass
 
-    @abstractmethod
     def Update(self):
         for component in self.components.values():
             component.Update()
         pass
 
-    @abstractmethod
     def LateUpdate(self):
         for component in self.components.values():
             component.LateUpdate()
         pass
 
-    @abstractmethod
     def Render(self):
         for component in self.components.values():
             component.Render()
         pass
-
-    def AddComponent(self, component: Component):
+ 
+    def AddComponent(self, component: Component) -> Component:
+        component = component()
         component.SetOwner(self)
         self.components[component.GetType().value] = component
         return self.components[component.GetType().value]
 
-    def GetComponent(self, component: Component) -> Component:
-        component = self.components[component.GetType().value]
+    def GetComponent(self, component: Enums.ComponentType) -> Component:
+        component = self.components[component.value]
         return component
 
     def SetState(self, state): self.state = state

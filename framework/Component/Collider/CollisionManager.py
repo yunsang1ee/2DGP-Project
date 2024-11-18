@@ -3,8 +3,8 @@ from typing import Dict
 
 from pygame import Vector2
 
-from framework.Application import app
 from framework.Common import Enums
+from framework.Common.InputManager import inputManager
 from framework.Component.Collider.Collider import Collider
 from framework.Component.Transform import Transform
 from framework.GameObject.GameObject import GameObject
@@ -22,6 +22,7 @@ class CollisionManager:
 	
 	@staticmethod
 	def Update():
+		from framework.Application import app
 		scene = app.activeScene
 		for row in range(Enums.LayerType.End.value):
 			for col in range(row, Enums.LayerType.End.value):
@@ -31,6 +32,7 @@ class CollisionManager:
 	
 	@staticmethod
 	def LateUpdate():
+		if inputManager.GetKeyDown(']'): Collider.ToggleRender()
 		pass
 	
 	@staticmethod

@@ -45,6 +45,8 @@ class Scene:
 
     @abstractmethod
     def OnExit(self):
+        from framework.Component.Collider.CollisionManager import CollisionManager
+        CollisionManager.clear()
         pass
   
     def AddObject(self, obj):
@@ -61,7 +63,9 @@ class Scene:
             print("Object is not a GameObject")
         pass
 
-    def GetGameObjects(self, layer : Enums.LayerType) -> list[GameObject]:
+    def GetGameObjects(self, layer : Enums.LayerType = None) -> list[GameObject]:
+        if layer is None:
+            return self.objects
         return [obj for obj in self.objects if obj.GetLayer() == layer]
 
     pass

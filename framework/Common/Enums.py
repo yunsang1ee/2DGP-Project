@@ -3,6 +3,7 @@ import enum
 class LayerType(enum.Enum):
     Non = 0
     BackGround = enum.auto()
+    Obstacle = enum.auto()
     Tree = enum.auto()
     Player = enum.auto()
     Enemy = enum.auto()
