@@ -21,10 +21,10 @@ class ColliderType(enum.Enum):
 
 class ComponentType(enum.Enum):
     Transform = 0
-    Collider = enum.auto()
     Script = enum.auto()
     Sprite = enum.auto()
     Animation = enum.auto()
+    Collider = enum.auto()
     Camera = enum.auto()
     End = enum.auto()
     pass
