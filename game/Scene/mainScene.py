@@ -72,6 +72,7 @@ class MainScene(Scene.Scene):
 		sp: Sprite = player.AddComponent(Sprite)
 		sp.SetImage("Lumberjack.png")
 		sp.AddAction('idle', 0, 6, 6, Vector2(67, 1423), Vector2(72, 72), '')
+		sp.AddAction('move', 0, 8, 6, Vector2(67, 1314), Vector2(72, 72), '')
 		
 		pass
 	

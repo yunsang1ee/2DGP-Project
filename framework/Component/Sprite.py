@@ -41,15 +41,15 @@ class Sprite(Component):
 		tr: Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
 		if self.curAction is not None:
 			info = self.action[self.curAction]
-			self.image.clip_composite_draw(int(info.offset.x + (int(info.curFrame) % info.frameWidth) * (info.size.x + 1))
-			                               , int(info.offset.y + (int(info.curFrame) // info.frameWidth) * info.size.y)
-			                               , int(info.size.x)
-			                               , int(info.size.y)
+			left = int(info.offset.x + (int(info.curFrame) % info.frameWidth) * (info.size.x + 1))
+			bottom = int(info.offset.y - (int(info.curFrame) // info.frameWidth) * (info.size.y + 1))
+			# print(f'{left=}, {bottom=}')
+			self.image.clip_composite_draw(left, bottom
+			                               , int(info.size.x), int(info.size.y)
 			                               , tr.GetRotation()
 			                               , info.flip
 			                               , tr.GetPosition().x, tr.GetPosition().y
-			                               , int(info.size.x) * 2
-			                               , int(info.size.y) * 2)
+			                               , int(info.size.x), int(info.size.y))
 		pass
 	
 	def SetImage(self, path: str):
@@ -57,11 +57,16 @@ class Sprite(Component):
 		pass
 	
 	def AddAction(self, name : str, frame : float, frameCount : int, frameWidth : int
-	              , offset : Vector2, size : Vector2, filp : str):
+	              , offset : Vector2, size : Vector2, flip : str):
 		self.curAction = name
-		self.action[name] = ImageInfo(frame, frameCount, frameWidth, offset, size, filp)
+		self.action[name] = ImageInfo(frame, frameCount, frameWidth, offset, size, flip)
 		pass
 	def SetAction(self, name : str):
 		self.curAction = name
+		self.action[self.curAction].curFrame = 0
+		pass
+	
+	def SetFlip(self, name : str, flip : str):
+		self.action[name].flip = flip
 		pass
 	pass
