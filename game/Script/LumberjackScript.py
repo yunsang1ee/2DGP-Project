@@ -17,6 +17,10 @@ def moveKeyDown(event : Tuple[str, int | str]):
 	return event[0] is 'InputDown'\
 		and event[1] in ('w', 'a', 's', 'd')\
 		and inputManager.GetKeyDown(event[1])
+def moveKeyPressed(event : Tuple[str, int | str]):
+	return event[0] is 'InputPressed'\
+		and event[1] in ('w', 'a', 's', 'd')\
+		and inputManager.GetKey(event[1])
 def notMove(event : Tuple[str, int | str]):
 	return event[0] is 'NotMove'
 def endAnimation(event : Tuple[str, int | str]):
@@ -48,8 +52,14 @@ class Move(State):
 		# tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		sp.SetAction('move')
-		if event[1] is 'a': sp.SetFlip('move', 'h')
-		elif event[1] is 'd': sp.SetFlip('move', '')
+		flip : str = 'None'
+		if event[1] is 'a': flip = 'h'
+		elif event[1] is 'd': flip = ''
+		if flip is not 'None':
+			sp.SetFlip('idle', flip)
+			sp.SetFlip('move', flip)
+			sp.SetFlip('attack', flip)
+			sp.SetFlip('attackCritical', flip)
 		pass
 	
 	@staticmethod
@@ -60,6 +70,7 @@ class Move(State):
 	def do(own):
 		tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
 		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
+		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		# delta : Vector2 = Vector2(1, 0).rotate(tr.GetRotation()) * sc.speed * timer.GetDeltaTime()
 		# tr.SetPosition(tr.GetPosition() + delta)
 		delta = Vector2()
@@ -71,10 +82,17 @@ class Move(State):
 			delta += Vector2(0, -sc.speed)
 		if inputManager.GetKey('d'):
 			delta += Vector2(sc.speed, 0)
+			
+		flip : str = 'None'
 		if delta == Vector2(0, 0):
 			sc.statemachine.add_event(('NotMove', 0))
-		elif delta.x > 0: own.GetComponent(Enums.ComponentType.Sprite).SetFlip('move', '')
-		elif delta.x < 0: own.GetComponent(Enums.ComponentType.Sprite).SetFlip('move', 'h')
+		elif delta.x > 0: flip = ''
+		elif delta.x < 0: flip = 'h'
+		if flip is not 'None':
+			sp.SetFlip('idle', flip)
+			sp.SetFlip('move', flip)
+			sp.SetFlip('attack', flip)
+			sp.SetFlip('attackCritical', flip)
 		tr.SetPosition(tr.GetPosition() + delta * timer.GetDeltaTime())
 		pass
 
@@ -104,12 +122,22 @@ class Attack(State):
 		if sp.action[sp.curAction].isComplete:
 			sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
 			
+			inputPressed = inputManager.GetKey
+			if inputPressed('w'): sc.statemachine.add_event(('InputPressed', 'w'))
+			elif inputPressed('a'): sc.statemachine.add_event(('InputPressed', 'a'))
+			elif inputPressed('d'): sc.statemachine.add_event(('InputPressed', 'd'))
+			elif inputPressed('s'): sc.statemachine.add_event(('InputPressed', 's'))
+			else: sc.statemachine.add_event(('EndAnimation', 0))
+		elif sp.action[sp.curAction].curFrame <= sp.action[sp.curAction].frameCount // 2:
 			inputDown = inputManager.GetKeyDown
-			if inputDown('w'): sc.statemachine.add_event(('InputDown', 'w'))
-			if inputDown('a'): sc.statemachine.add_event(('InputDown', 'a'))
-			if inputDown('d'): sc.statemachine.add_event(('InputDown', 'd'))
-			if inputDown('s'): sc.statemachine.add_event(('InputDown', 's'))
-			sc.statemachine.add_event(('EndAnimation', 0))
+			flip: str = 'None'
+			if inputDown('a'): flip = 'h'
+			elif inputDown('d'): flip = ''
+			if flip is not 'None':
+				sp.SetFlip('idle', flip)
+				sp.SetFlip('move', flip)
+				sp.SetFlip('attack', flip)
+				sp.SetFlip('attackCritical', flip)
 		pass
 
 
@@ -131,22 +159,23 @@ class LumberjackScript(Script):
 					notMove: Idle, attackKeyDown: Attack
 				},
 				Attack : {
-					endAnimation: Idle, moveKeyDown: Move
+					endAnimation: Idle, moveKeyPressed: Move
 				},
 			}
 		)
-	
+
 	def Update(self):
 		inputDown = inputManager.GetKeyDown
 		if inputDown('w') : self.statemachine.add_event(('InputDown', 'w'))
-		if inputDown('a') : self.statemachine.add_event(('InputDown', 'a'))
-		if inputDown('d') : self.statemachine.add_event(('InputDown', 'd'))
-		if inputDown('s') : self.statemachine.add_event(('InputDown', 's'))
-		if inputDown(inputManager.kMouseLeft) :
+		elif inputDown('a') : self.statemachine.add_event(('InputDown', 'a'))
+		elif inputDown('d') : self.statemachine.add_event(('InputDown', 'd'))
+		elif inputDown('s') : self.statemachine.add_event(('InputDown', 's'))
+		if inputDown(inputManager.kMouseLeft):
 			self.statemachine.add_event(('Attack', inputManager.kMouseLeft))
+			
 		self.statemachine.Update()
 		pass
-	
+
 	def LateUpdate(self):
 		pass
 	
