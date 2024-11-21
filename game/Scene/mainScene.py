@@ -68,11 +68,18 @@ class MainScene(Scene.Scene):
 		cd: BoxCollider2D = player.AddComponent(BoxCollider2D)
 		cd.SetOffset(Vector2(-26, -36))
 		cd.SetSize(Vector2(0.42, 0.42))
-		sc: LumberjackScript = player.AddComponent(LumberjackScript)
 		sp: Sprite = player.AddComponent(Sprite)
 		sp.SetImage("Lumberjack.png")
-		sp.AddAction('idle', 0, 6, 6, Vector2(67, 1423), Vector2(72, 72), '')
-		sp.AddAction('move', 0, 8, 6, Vector2(67, 1314), Vector2(72, 72), '')
+		sp.AddAction('idle', 0, 6, 6
+		             , Vector2(67, 1423), Vector2(72, 72), '')
+		sp.AddAction('move', 0, 8, 6
+		             , Vector2(67, 1314), Vector2(72, 72), '')
+		sp.AddAction('attack', 0, 10, 4
+		             , Vector2(67, 1168), Vector2(96, 72), '',  repeat=False)
+		sp.AddAction('attackCritical', 0, 15, 4
+		             , Vector2(67, 949), Vector2(96, 72), '', repeat=False)
+		sc: LumberjackScript = player.AddComponent(LumberjackScript); sc.Init()
+		
 		
 		pass
 	

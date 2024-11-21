@@ -5,7 +5,9 @@ from pygame import Vector2
 
 
 class InputManager:
-    kMouseButton : Final = 0x1
+    kMouseLeft : Final = 352
+    kMouseMiddle : Final = 353
+    kMouseRight : Final = 354
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "_instance"):
@@ -15,7 +17,7 @@ class InputManager:
     def __init__(self):
         cls = type(self)
         if not hasattr(cls, "_init"):
-            self.__keys : list[int] = [0b0000 for _ in range(352)]
+            self.__keys : list[int] = [0b0000 for _ in range(355)]
             self.__mousePosition : Vector2 = Vector2(0,0)
             cls._init = True
         pass
@@ -70,9 +72,9 @@ class InputManager:
         elif event.type == SDL_KEYUP and event.key is not None:
             self.__keys[self.keyCodeOffset(event.key)] |= InputManager.KeyState.kUpBit
         elif event.type == SDL_MOUSEBUTTONDOWN:
-            self.__keys[self.kMouseButton] |= InputManager.KeyState.kDownBit
+            self.__keys[351 + event.button] |= InputManager.KeyState.kDownBit
         elif event.type == SDL_MOUSEBUTTONUP:
-            self.__keys[self.kMouseButton] |= InputManager.KeyState.kUpBit
+            self.__keys[351 + event.button] |= InputManager.KeyState.kUpBit
         elif event.type == SDL_MOUSEMOTION:
             self.__mousePosition = event.x,  - 1 - event.y
         pass

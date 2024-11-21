@@ -4,19 +4,22 @@ from pico2d import *
 from pygame import Vector2
 
 from framework.Common import Enums
-from framework.Common.Timer import Timer, timer
+from framework.Common.Timer import timer
 from framework.Component.Component import Component
 from framework.Component.Transform import Transform
 
 class ImageInfo:
 	def __init__(self, frame : float, frameCount : int, frameWidth : int
-	             , offset : Vector2, size : Vector2, flip : str ):
+	             , offset : Vector2, size : Vector2, flip : str, frameSpeed : int, repeat : bool):
 		self.curFrame : float = frame
 		self.frameCount : int = frameCount
 		self.frameWidth : int = frameWidth
 		self.offset : Vector2 = offset
 		self.size : Vector2 = size
-		self.flip : bool = flip
+		self.flip : str = flip
+		self.frameSpeed : int = frameSpeed
+		self.repeat : bool = repeat
+		self.isComplete : bool = False
 		pass
 	pass
 
@@ -34,7 +37,10 @@ class Sprite(Component):
 	def LateUpdate(self):
 		if self.curAction is not None:
 			info = self.action[self.curAction]
-			info.curFrame = (info.curFrame + 5 * timer.GetDeltaTime()) % info.frameCount
+			info.curFrame = info.curFrame + info.frameSpeed * timer.GetDeltaTime()
+			if info.curFrame > info.frameCount:
+				info.isComplete = True
+				info.curFrame %= info.frameCount
 		pass
 	
 	def Render(self):
@@ -57,13 +63,19 @@ class Sprite(Component):
 		pass
 	
 	def AddAction(self, name : str, frame : float, frameCount : int, frameWidth : int
-	              , offset : Vector2, size : Vector2, flip : str):
+	              , offset : Vector2, size : Vector2, flip : str, frameSpeed : int = 5, repeat : bool = True):
 		self.curAction = name
-		self.action[name] = ImageInfo(frame, frameCount, frameWidth, offset, size, flip)
+		self.action[name] = ImageInfo(frame, frameCount, frameWidth
+		                              , offset, size, flip, frameSpeed, repeat)
 		pass
 	def SetAction(self, name : str):
 		self.curAction = name
 		self.action[self.curAction].curFrame = 0
+		self.action[self.curAction].isComplete = False
+		pass
+	
+	def SetActionSpeed(self,name : str, frameSpeed : int):
+		self.action[name].frameSpeed = frameSpeed
 		pass
 	
 	def SetFlip(self, name : str, flip : str):
