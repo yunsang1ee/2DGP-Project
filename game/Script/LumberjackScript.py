@@ -3,10 +3,12 @@ from typing import Tuple
 
 from pygame import Vector2
 
-from framework.Common import Enums
+from framework.Common import Enums, Object
 from framework.Common.InputManager import inputManager
 from framework.Common.StateMachine import StateMachine, State
 from framework.Common.Timer import timer
+from framework.Component.Collider import Collider
+from framework.Component.Collider.BoxCollider2D import BoxCollider2D
 from framework.Component.Script import Script
 from framework.Component.Sprite import Sprite
 from framework.Component.Transform import Transform
@@ -43,15 +45,15 @@ class Idle(State):
 		
 	@staticmethod
 	def do(own):
-		
 		pass
 
 class Move(State):
 	@staticmethod
 	def enter(own, event):
-		# tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
+		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		sp.SetAction('move')
+		sp.SetActionSpeed('move', int(sc.hungry / 10))
 		flip : str = 'None'
 		if event[1] is 'a': flip = 'h'
 		elif event[1] is 'd': flip = ''
@@ -75,13 +77,13 @@ class Move(State):
 		# tr.SetPosition(tr.GetPosition() + delta)
 		delta = Vector2()
 		if inputManager.GetKey('w'):
-			delta += Vector2(0, sc.speed)
+			delta += Vector2(0, sc.hungry)
 		if inputManager.GetKey('a'):
-			delta += Vector2(-sc.speed, 0)
+			delta += Vector2(-sc.hungry, 0)
 		if inputManager.GetKey('s'):
-			delta += Vector2(0, -sc.speed)
+			delta += Vector2(0, -sc.hungry)
 		if inputManager.GetKey('d'):
-			delta += Vector2(sc.speed, 0)
+			delta += Vector2(sc.hungry, 0)
 			
 		flip : str = 'None'
 		if delta == Vector2(0, 0):
@@ -97,6 +99,7 @@ class Move(State):
 		pass
 
 class Attack(State):
+	AttackTrigger : GameObject = None
 	@staticmethod
 	def enter(own: GameObject, event: Tuple[str, int | str]):
 		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
@@ -120,8 +123,11 @@ class Attack(State):
 	def do(own: GameObject):
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		if sp.action[sp.curAction].isComplete:
-			sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
+			if Attack.AttackTrigger is not None:
+				Object.Destroy(Attack.AttackTrigger)
+				Attack.AttackTrigger = None
 			
+			sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
 			inputPressed = inputManager.GetKey
 			if inputPressed('w'): sc.statemachine.add_event(('InputPressed', 'w'))
 			elif inputPressed('a'): sc.statemachine.add_event(('InputPressed', 'a'))
@@ -138,13 +144,23 @@ class Attack(State):
 				sp.SetFlip('move', flip)
 				sp.SetFlip('attack', flip)
 				sp.SetFlip('attackCritical', flip)
+		elif Attack.AttackTrigger is None:
+			tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
+			size : Vector2 = Vector2(0.3, 0.62)
+			offset : Vector2 = Vector2(40, 0)
+			if sp.curAction is 'attackCritical': offset.x += size.x * 50; size *= 1.5
+			offsetFactor : float = 1 if sp.action[sp.curAction].flip is '' else -1
+			triggerPosition : Vector2 = tr.GetPosition() + offset * offsetFactor
+			Attack.AttackTrigger = Object.Instantiate(Enums.LayerType.AttackTrigger, triggerPosition)
+			cd : BoxCollider2D = Attack.AttackTrigger.AddComponent(BoxCollider2D)
+			cd.SetSize(size)
+			cd.SetOffset(own.GetComponent(Enums.ComponentType.Collider).GetOffset())
 		pass
 
 
 class LumberjackScript(Script):
 	def __init__(self):
 		super().__init__()
-		self.speed : float = 100.0
 		self.hungry : float = 100.0
 		self.statemachine : StateMachine = None
 	

@@ -5,6 +5,8 @@ from pygame import Vector2
 
 from framework.Common import Object, Enums
 from framework.Component.Collider.BoxCollider2D import BoxCollider2D
+from framework.Component.Collider.CircleCollider import CircleCollider
+from framework.Component.Collider.CollisionManager import CollisionManager
 from framework.Component.Component import Component
 from framework.Component.Sprite import Sprite
 from framework.GameObject.GameObject import GameObject
@@ -58,6 +60,7 @@ class MainScene(Scene.Scene):
 	def OnEnter(self):
 		super().OnEnter()
 		from framework.Application import app
+		CollisionManager.CollisionLayerCheck(Enums.LayerType.Enemy, Enums.LayerType.AttackTrigger, True)
 		
 		background : GameObject = Object.Instantiate(Enums.LayerType.BackGround, app.screen // 2)
 		sp : Sprite = background.AddComponent(Sprite)
@@ -66,8 +69,8 @@ class MainScene(Scene.Scene):
 		
 		player: GameObject = Object.Instantiate(Enums.LayerType.Player, app.screen // 2)
 		cd: BoxCollider2D = player.AddComponent(BoxCollider2D)
-		cd.SetOffset(Vector2(-26, -36))
-		cd.SetSize(Vector2(0.42, 0.42))
+		cd.SetOffset(Vector2(0, -10))
+		cd.SetSize(Vector2(0.32, 0.62))
 		sp: Sprite = player.AddComponent(Sprite)
 		sp.SetImage("Lumberjack.png")
 		sp.AddAction('idle', 0, 6, 6

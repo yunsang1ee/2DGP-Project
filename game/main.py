@@ -8,7 +8,7 @@ def main():
     app.Init(get_canvas_width(), get_canvas_height())
     app.CreateScene('mainScene', MainScene())
     app.LoadScene('mainScene')
-
+    
     while True:
         app.Run()
     app.Release()

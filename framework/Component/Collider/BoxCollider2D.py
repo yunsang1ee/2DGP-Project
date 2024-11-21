@@ -21,10 +21,9 @@ class BoxCollider2D(Collider):
 		if not self.isRender() : return
 		
 		tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
-		position = tr.GetPosition()
-		size = self.GetSize() * 100
-		offset = self.GetOffset()
-		draw_rectangle(offset.x + position.x
-		               , offset.y + position.y
-		               , offset.x + position.x + size.x
-		               , offset.y + position.y + size.y)
+		position = tr.GetPosition() + self.GetOffset()
+		size = self.GetSize() * 100 // 2
+		draw_rectangle  (position.x - size.x
+		               , position.y - size.y
+		               , position.x + size.x
+		               , position.y + size.y)
