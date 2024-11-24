@@ -11,6 +11,7 @@ from framework.Common.StateMachine import StateMachine, State
 from framework.Common.Timer import timer
 from framework.Component.Collider import Collider
 from framework.Component.Collider.BoxCollider2D import BoxCollider2D
+from framework.Component.Collider.CollisionManager import CollisionManager
 from framework.Component.Script import Script
 from framework.Component.Sprite import Sprite
 from framework.Component.Transform import Transform
@@ -29,7 +30,9 @@ def notMove(event : Tuple[str, int | str]):
 	return event[0] is 'NotMove'
 def endAnimation(event : Tuple[str, int | str]):
 	return event[0] is 'EndAnimation'
-def attackKeyDown(event : Tuple[str, int | str]):
+def damaged(event : Tuple[str, int]):
+	return event[0] is 'Damaged'
+def attackKeyDown(event : Tuple[str, int]):
 	return event[0] is 'Attack'\
 		and event[1] >= 20.0\
 		and inputManager.GetKeyDown(inputManager.kMouseLeft)
@@ -52,12 +55,17 @@ class Idle(State):
 	def do(own):
 		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
-		if inputManager.GetKey('e') and sp.name == 'Lumberjack':
+		if (sc.generateReached
+				and sc.energy >= 5
+				and sp.name == 'Lumberjack'
+				and inputManager.GetKey('e')
+		):
 			sc.evolutionTimer.x += timer.GetDeltaTime()
 			if sc.evolutionTimer.x >= sc.evolutionTimer.y:
 				sc.evolutionTimer.x = 0.0
 				sc.SwapSprite()
-				
+		
+		if inputManager.GetKeyUp('e'): sc.evolutionTimer.x = 0.0
 			
 		if Idle.onKey:
 			inputPressed = inputManager.GetKey
@@ -118,7 +126,7 @@ class Attack(State):
 	@staticmethod
 	def enter(own: GameObject, event: Tuple[str, int | str]):
 		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
-		critical = randint(0, 10000)
+		critical = randint(1, 10000)
 		if critical < sc.hungry * 100 / 2:
 			sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 			sp.SetAction('attack')
@@ -133,6 +141,9 @@ class Attack(State):
 	
 	@staticmethod
 	def exit(own: GameObject, event: Tuple[str, int | str]):
+		if Attack.AttackTrigger is not None:
+			Object.Destroy(Attack.AttackTrigger)
+			Attack.AttackTrigger = None
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		if (sp.name == 'Juggernaut') and (sp.curAction is 'attackCritical'):
 			cd : BoxCollider2D = own.GetComponent(Enums.ComponentType.Collider)
@@ -180,13 +191,56 @@ class Attack(State):
 			cd.SetOffset(own.GetComponent(Enums.ComponentType.Collider).GetOffset())
 		pass
 
+class Damaged(State):
+	deathTimer : Vector2 = Vector2(0, 2.0)
+	damagedTimer : Vector2 = Vector2(0, 0.5)
+	@staticmethod
+	def enter(own: GameObject, event: Tuple[str, int | str]):
+		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
+		if event[1] <= 0.0:
+			sp.SetAction('death')
+		else:
+			sp.SetAction('idle')
+			CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.EnemyAttackTrigger, False)
+			sp.image.opacify(0.3)
+		pass
+	
+	@staticmethod
+	def exit(own: GameObject, event: Tuple[str, int | str]):
+		CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.EnemyAttackTrigger, True)
+		pass
+	
+	@staticmethod
+	def do(own: GameObject):
+		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
+		if sp.action[sp.curAction].isComplete:
+			if sp.curAction == 'death':
+				Damaged.deathTimer.x += timer.GetDeltaTime()
+				if Damaged.deathTimer.x >= Damaged.deathTimer.y:
+					from framework.Application import app
+					app.Close()
+			else:
+				Damaged.damagedTimer.x += timer.GetDeltaTime()
+				if Damaged.damagedTimer.x >= Damaged.damagedTimer.y:
+					Damaged.damagedTimer.x = 0.0
+					sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
+					sp.image.opacify(1.0)
+					sc.statemachine.add_event(('EndAnimation', 0))
+		pass
+	pass
 
 class LumberjackScript(Script):
 	def __init__(self):
 		super().__init__()
 		self.swapSprite : Sprite = None
-		self.evolutionTimer : Vector2 = Vector2(0.0, 5.0)
+		
+		self.health : float = 100.0
 		self.hungry : float = 100.0
+		
+		self.energy : int = 0
+		self.generateReached : bool = False
+		self.evolutionTimer : Vector2 = Vector2(0.0, 5.0)
+		
 		self.statemachine : StateMachine = None
 	
 	def Update(self):
@@ -197,7 +251,8 @@ class LumberjackScript(Script):
 		elif inputDown('s') : self.statemachine.add_event(('InputDown', 's'))
 		if inputDown(inputManager.kMouseLeft):
 			self.statemachine.add_event(('Attack', inputManager.kMouseLeft))
-			
+		
+		
 		self.statemachine.Update()
 		pass
 
@@ -208,6 +263,10 @@ class LumberjackScript(Script):
 		pass
 	
 	def OnCollisionEnter(self, other: 'Collider'):
+		otherObj : GameObject = other.GetOwner()
+		if otherObj.GetLayer() == Enums.LayerType.EnemyAttackTrigger:
+			self.health -= 7.0
+			self.statemachine.add_event(('Damaged', self.health))
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
@@ -220,6 +279,7 @@ class LumberjackScript(Script):
 		cd: BoxCollider2D = self.GetOwner().AddComponent(BoxCollider2D)
 		cd.SetOffset(Vector2(0, -10))
 		cd.SetSize(Vector2(0.32, 0.62))
+		
 		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Juggernaut.png")
 		sp.AddAction('idle', 0, 7, 6
@@ -229,13 +289,13 @@ class LumberjackScript(Script):
 		sp.AddAction('attack', 0, 16, 4
 		             , Vector2(65, 2846), Vector2(100, 72), '', repeat=False)
 		sp.AddAction('attackCritical', 0, 21, 2
-		             , Vector2(65, 2526), Vector2(204, 100), '', repeat=False)  # h방향 28 offset
+		             , Vector2(65, 2526), Vector2(204, 100), '', repeat=False)
 		sp.AddAction('death', 0, 29, 2
-		             , Vector2(65, 1415), Vector2(210, 100), '', repeat=False)  # h방향 28 offset
+		             , Vector2(65, 1415), Vector2(210, 100), '', repeat=False)
 		sp.SetAction('idle')
 		self.swapSprite = sp
-		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		
+		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Lumberjack.png")
 		sp.AddAction('idle', 0, 6, 6
 		             , Vector2(67, 1423), Vector2(72, 72), '')
@@ -250,14 +310,14 @@ class LumberjackScript(Script):
 		self.statemachine = StateMachine(self.GetOwner(), Idle)
 		self.statemachine.set_transitions(
 			{
-				Idle: {  # 'Input', int | str -> inputManager.GetKeyDown(int | str) -> nextState[returnVal]
-					moveKeyDown: Move, moveKeyPressed: Move, attackKeyDown: Attack
+				Idle: {
+					moveKeyDown: Move, moveKeyPressed: Move, attackKeyDown: Attack, damaged : Damaged
 				},
 				Move: {
-					notMove: Idle, attackKeyDown: Attack
+					notMove: Idle, attackKeyDown: Attack, damaged : Damaged
 				},
 				Attack: {
-					endAnimation: Idle, moveKeyPressed: Move
+					endAnimation: Idle, moveKeyPressed: Move, damaged : Damaged
 				},
 			}
 		)

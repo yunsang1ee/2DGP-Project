@@ -9,7 +9,7 @@ def main():
     app.CreateScene('mainScene', MainScene())
     app.LoadScene('mainScene')
     
-    while True:
+    while app.running:
         app.Run()
     app.Release()
 

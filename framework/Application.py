@@ -34,6 +34,7 @@ class Application:
         self.screen : Vector2 = Vector2()
         self.__scenes : dict[str, Scene] = {}
         self.activeScene : Scene = None
+        self.running : bool = True
         cls._init = True
 
     def Init(self, width, height):
@@ -91,5 +92,8 @@ class Application:
         self.activeScene = self.__scenes[name]
         self.activeScene.OnEnter()
         pass
+    
+    def Close(self):
+        self.running = False
 
 app = Application()
