@@ -14,7 +14,7 @@ class Timer:
         self.__curTime = 0
         self.targetFPS = 144
         self.curFPS = 0
-        self.prevTime = 0
+        self.prevTime = time.perf_counter()
         self.deltaTime = 0
         cls._init = True
 

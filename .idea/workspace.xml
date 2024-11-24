@@ -4,14 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="StateMachine 60%">
+    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Common/Enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Enums.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Common/InputManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/InputManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Common/StateMachine.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/StateMachine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Common/Timer.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Timer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/Component/Sprite.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Sprite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/GameObject/GameObject.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/GameObject/GameObject.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Scene/mainScene.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Scene/mainScene.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Script/LumberjackScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/LumberjackScript.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/resource/Box.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Box.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/resource/Juggernaut.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Juggernaut.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/resource/Lumberjack.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Lumberjack.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +67,7 @@
     "Python.main.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/user/PycharmProjects/2DGP-Project",
+    "last_opened_file_path": "C:/Users/user/PycharmProjects/2DGP-Project/game/Script",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -77,6 +79,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\game\Script" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\main" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\framework\Component" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project" />
@@ -253,6 +256,8 @@
       <workItem from="1731854763973" duration="43767000" />
       <workItem from="1731973050599" duration="19651000" />
       <workItem from="1732091067442" duration="19883000" />
+      <workItem from="1732196877119" duration="16278000" />
+      <workItem from="1732424179131" duration="22409000" />
     </task>
     <task id="LOCAL-00001" summary="2DGP 1차발표 자료 2021180026 이윤상">
       <option name="closed" value="true" />
@@ -350,7 +355,31 @@
       <option name="project" value="LOCAL" />
       <updated>1732034543039</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="StateMachine 80%">
+      <option name="closed" value="true" />
+      <created>1732201054637</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1732201054637</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Player StateMachine&#10;Idle&#10;Move&#10;Attack">
+      <option name="closed" value="true" />
+      <created>1732208214469</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1732208214469</updated>
+    </task>
+    <task id="LOCAL-00015" summary="AttackTrigger Collision">
+      <option name="closed" value="true" />
+      <created>1732215269061</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1732215269061</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -381,7 +410,10 @@
     <MESSAGE value="2차 발표" />
     <MESSAGE value="background&#10;player&#10;  collider&#10;  sprite (idle)" />
     <MESSAGE value="StateMachine 40%" />
-    <option name="LAST_COMMIT_MESSAGE" value="StateMachine 40%" />
+    <MESSAGE value="StateMachine 80%" />
+    <MESSAGE value="Player StateMachine&#10;Idle&#10;Move&#10;Attack" />
+    <MESSAGE value="AttackTrigger Collision" />
+    <option name="LAST_COMMIT_MESSAGE" value="AttackTrigger Collision" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -400,6 +432,6 @@
     <SUITE FILE_PATH="coverage/main_py$InputManager.coverage" NAME="InputManager Coverage Results" MODIFIED="1729814157361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$Application.coverage" NAME="Application Coverage Results" MODIFIED="1729817860374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$GameObject.coverage" NAME="GameObject Coverage Results" MODIFIED="1729798220032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1732179968292" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1732450408253" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

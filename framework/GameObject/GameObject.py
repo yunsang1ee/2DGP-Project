@@ -38,6 +38,11 @@ class GameObject:
         self.components[component.GetType().value] = component
         return self.components[component.GetType().value]
 
+    def SetComponent(self, component: Component) -> Component:
+        component.SetOwner(self)
+        self.components[component.GetType().value] = component
+        return self.components[component.GetType().value]
+    
     def GetComponent(self, component: Enums.ComponentType) -> Component:
         component = self.components[component.value]
         return component

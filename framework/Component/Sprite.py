@@ -26,21 +26,26 @@ class ImageInfo:
 class Sprite(Component):
 	def __init__(self, ):
 		super().__init__(Enums.ComponentType.Sprite)
+		self.name : str = None
 		self.image : Image = None
 		self.curAction : str = None
 		self.action : Dict[str, ImageInfo] = {}
+		self.offset : Vector2 = Vector2(0, 0)
 		pass
 	
 	def Update(self):
 		pass
 	
 	def LateUpdate(self):
+		info = self.action[self.curAction]
+		if (not info.repeat) and info.isComplete: return
 		if self.curAction is not None:
-			info = self.action[self.curAction]
-			info.curFrame = info.curFrame + info.frameSpeed * timer.GetDeltaTime()
+			delta = timer.GetDeltaTime()
+			info.curFrame = info.curFrame + info.frameSpeed * delta
 			if info.curFrame > info.frameCount:
 				info.isComplete = True
-				info.curFrame %= info.frameCount
+				if info.repeat: info.curFrame %= info.frameCount
+				else: info.curFrame -= 1
 		pass
 	
 	def Render(self):
@@ -54,11 +59,12 @@ class Sprite(Component):
 			                               , int(info.size.x), int(info.size.y)
 			                               , tr.GetRotation()
 			                               , info.flip
-			                               , tr.GetPosition().x, tr.GetPosition().y
+			                               , tr.GetPosition().x + self.offset.x, tr.GetPosition().y + self.offset.y
 			                               , int(info.size.x), int(info.size.y))
 		pass
 	
 	def SetImage(self, path: str):
+		self.name = path[0:path.find('.')]
 		self.image = load_image("game/resource/" + path)
 		pass
 	
@@ -78,7 +84,15 @@ class Sprite(Component):
 		self.action[name].frameSpeed = frameSpeed
 		pass
 	
+	def SetOffset(self, offset : Vector2):
+		self.offset = offset
+		pass
+	
 	def SetFlip(self, name : str, flip : str):
 		self.action[name].flip = flip
+		pass
+	def SetAllFlip(self, flip : str):
+		for info in self.action.values():
+			info.flip = flip
 		pass
 	pass
