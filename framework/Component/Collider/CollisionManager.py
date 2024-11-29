@@ -59,7 +59,7 @@ class CollisionManager:
 			if leftCD is None: continue
 
 			for rightObj in rights:
-				if not rightObj.GetState() is not GameObject.State.Alive: continue
+				if rightObj.GetState() is not GameObject.State.Alive: continue
 				
 				rightCD = rightObj.GetComponent(Enums.ComponentType.Collider)
 				if rightCD is None or leftObj == rightObj: continue

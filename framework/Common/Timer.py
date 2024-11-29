@@ -16,6 +16,7 @@ class Timer:
         self.curFPS = 0
         self.prevTime = time.perf_counter()
         self.deltaTime = 0
+        self.runTime = 0
         cls._init = True
 
     def Update(self):
@@ -28,12 +29,14 @@ class Timer:
 
         self.curFPS += 1
         self.__curTime += self.deltaTime
+        self.runTime += self.deltaTime
         if self.__curTime > 1.0:
             self.curFPS = 0
             self.__curTime = 0
         pass
 
     def GetDeltaTime(self): return self.deltaTime
+    def GetRunTime(self): return self.runTime
     def GetCurrentFrameNum(self): return self.curFPS
 
     pass

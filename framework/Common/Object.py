@@ -5,8 +5,9 @@ from framework.Component.Transform import Transform
 from framework.GameObject.GameObject import GameObject
 from framework.Application import app
 
-def Instantiate(layer : LayerType, position : Vector2 = None, rotation : float = None) -> GameObject:
-	newObject = GameObject()
+def Instantiate(gameObject : type(GameObject), layer : LayerType
+                , position : Vector2 | None = None, rotation : float = None) -> GameObject:
+	newObject = gameObject()
 	newObject.layer = layer
 	
 	if position is not None:

@@ -10,6 +10,7 @@ class LayerType(enum.Enum):
     Supplies = enum.auto()
     AttackTrigger = enum.auto()
     EnemyAttackTrigger = enum.auto()
+    UI = enum.auto()
     Camera = enum.auto()
     End = enum.auto()
     pass

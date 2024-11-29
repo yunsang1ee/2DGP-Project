@@ -80,8 +80,11 @@ class Sprite(Component):
 		self.action[self.curAction].isComplete = False
 		pass
 	
-	def SetActionSpeed(self,name : str, frameSpeed : int):
-		self.action[name].frameSpeed = frameSpeed
+	def SetActionSpeed(self,name : str = None, frameSpeed : int = 5):
+		if name is None:
+			self.action[self.curAction].frameSpeed = frameSpeed
+		else:
+			self.action[name].frameSpeed = frameSpeed
 		pass
 	
 	def SetOffset(self, offset : Vector2):

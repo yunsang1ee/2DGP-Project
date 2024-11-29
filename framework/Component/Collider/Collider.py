@@ -43,17 +43,17 @@ class Collider(Component, ABC):
     
     def OnCollisionEnter(self, other: 'Collider'):
         sc : Script = self.GetOwner().GetComponent(ComponentType.Script)
-        sc.OnCollisionEnter(other)
+        if sc: sc.OnCollisionEnter(other)
         pass
     
     def OnCollisionStay(self, other: 'Collider'):
         sc : Script = self.GetOwner().GetComponent(ComponentType.Script)
-        sc.OnCollisionStay(other)
+        if sc: sc.OnCollisionStay(other)
         pass
     
     def OnCollisionExit(self, other: 'Collider'):
         sc : Script = self.GetOwner().GetComponent(ComponentType.Script)
-        sc.OnCollisionExit(other)
+        if sc: sc.OnCollisionExit(other)
         pass
     
     
