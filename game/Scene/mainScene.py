@@ -13,8 +13,8 @@ from framework.GameObject.GameObject import GameObject
 from framework.Scene import Scene
 from game.Script.LumberjackScript import LumberjackScript
 from game.Script.MonsterScripts import ZombieScript, WarthogScript
+from game.Script.SuppliesScript import TomatoScript, MedikitScript, TreeScript
 from game.Script.UIScript import UIScript
-
 
 class MainScene(Scene.Scene):
 	def __init__(self):
@@ -22,43 +22,27 @@ class MainScene(Scene.Scene):
 		self.player : GameObject = None
 		self.zombies : list[GameObject] = []
 		self.warthogs : list[GameObject] = []
-		self.EnemyGenTimer : Vector2 = Vector2(0, 6.0)
+		self.enemyGenTimer : Vector2 = Vector2(0, 6.0)
 		# 50 MPM(mob per minute) -> bossTimer == 10 minute -> (50 * 0.2 = 10) * 10 = 100 -> 100 * 0.1 = 10 energy
+		self.suppliesGenTimer : Vector2 = Vector2(0, 10.0)
 		self.font20 : Font = load_font('game/resource/ThornFont.ttf', 20)
 		self.font40 : Font = load_font('game/resource/ThornFont.ttf', 40)
 		self.font72 : Font = load_font('game/resource/ThornFont.ttf', 72)
 		pass
 	
 	def Update(self):
-		self.EnemyGenTimer.x += timer.GetDeltaTime()
-		if self.EnemyGenTimer.x >= self.EnemyGenTimer.y:
-			self.EnemyGenTimer.x = 0.0
-			for _ in range(5):
-				special = randint(1, 10000)
-				enemy : GameObject = None
-				sc = None
-				if special < 8000:
-					if len(self.zombies) > 0:
-						enemy = self.zombies.pop()
-						sc : ZombieScript = enemy.GetComponent(Enums.ComponentType.Script)
-				else:
-					if len(self.warthogs) > 0:
-						enemy = self.warthogs.pop()
-						sc : WarthogScript = enemy.GetComponent(Enums.ComponentType.Script)
-				if enemy is None: continue
-
-				sc.Regen()
-
-				tr : Transform = enemy.GetComponent(Enums.ComponentType.Transform)
-				playerTr : Transform = self.player.GetComponent(Enums.ComponentType.Transform)
-				minPos = playerTr.GetPosition() - app.screen
-				maxPos = playerTr.GetPosition() + app.screen
-				tr.SetPosition(Vector2(
-					randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
-					, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y))))
-				)
-
-				enemy.SetState(GameObject.State.Alive)
+		self.genEnemy()
+		
+		"""
+		Hungry Warning Point 50 (50 -> player Speed <= Monster Speed)
+		10 tmt/m
+		10 Hp/tmt
+		-0.8 Hp/s -> -48 Hp/m
+		-2.0 Hp/LeftClick
+		(10s Timer)  average 10 tomato/m -> 5~15 Gen
+		-> Gen/10s -> 5 Gen/m -> average 2 tomato/Gen -> 1 ~ 3 Gen
+		"""
+		self.genSupplies()
 		
 		def function(obj : GameObject):
 			layer = obj.GetLayer()
@@ -67,10 +51,73 @@ class MainScene(Scene.Scene):
 			return (layer != Enums.LayerType.BackGround
 			        , layer == Enums.LayerType.UI
 			        , -y)
-		
 		self.objects.sort(key=function)
+		
 		super().Update()
 		pass
+	
+	def genSupplies(self):
+		self.suppliesGenTimer.x += timer.GetDeltaTime()
+		if self.suppliesGenTimer.x >= self.suppliesGenTimer.y:
+			self.suppliesGenTimer.x = 0.0
+			special = randint(1, 10000)
+			count = math.ceil(special / 3333)
+			
+			playerTr: Transform = self.player.GetComponent(Enums.ComponentType.Transform)
+			minPos = playerTr.GetPosition() - app.screen
+			maxPos = playerTr.GetPosition() + app.screen
+			
+			for _ in range(count):
+				tomato: GameObject = Object.Instantiate(GameObject, Enums.LayerType.Supplies, Vector2(
+					randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
+					, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y)))))
+				sc = tomato.AddComponent(TomatoScript);sc.Init()
+			
+			special = randint(1, 10000)
+			if special < 1295:
+				medikit = Object.Instantiate(GameObject, Enums.LayerType.Supplies, Vector2(
+					randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
+					, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y)))))
+				sc = medikit.AddComponent(MedikitScript);sc.Init()
+				
+			special = randint(1, 10000)
+			if special < 3334:
+				for _ in range(randint(2, 3)):
+					tree = Object.Instantiate(GameObject, Enums.LayerType.Tree, Vector2(
+						randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
+						, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y)))))
+					sc : TreeScript = tree.AddComponent(TreeScript); sc.Init()
+	
+	def genEnemy(self):
+		self.enemyGenTimer.x += timer.GetDeltaTime()
+		if self.enemyGenTimer.x >= self.enemyGenTimer.y:
+			self.enemyGenTimer.x = 0.0
+			for _ in range(5):
+				special = randint(1, 10000)
+				enemy: GameObject = None
+				sc = None
+				if special < 0:
+					if len(self.zombies) > 0:
+						enemy = self.zombies.pop()
+						sc: ZombieScript = enemy.GetComponent(Enums.ComponentType.Script)
+				else:
+					if len(self.warthogs) > 0:
+						enemy = self.warthogs.pop()
+						sc: WarthogScript = enemy.GetComponent(Enums.ComponentType.Script)
+				if enemy is None: continue
+				
+				sc.Regen()
+				
+				tr: Transform = enemy.GetComponent(Enums.ComponentType.Transform)
+				playerTr: Transform = self.player.GetComponent(Enums.ComponentType.Transform)
+				minPos = playerTr.GetPosition() - app.screen
+				maxPos = playerTr.GetPosition() + app.screen
+				tr.SetPosition(Vector2(
+					randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
+					, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y))))
+				)
+				
+				enemy.SetState(GameObject.State.Alive)
 	
 	def LateUpdate(self):
 		super().LateUpdate()
@@ -90,6 +137,7 @@ class MainScene(Scene.Scene):
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Enemy, Enums.LayerType.Player, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.EnemyAttackTrigger, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.Supplies, True)
+		CollisionManager.CollisionLayerCheck(Enums.LayerType.AttackTrigger, Enums.LayerType.Tree, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Enemy, Enums.LayerType.Obstacle, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Obstacle, Enums.LayerType.EnemyAttackTrigger, True)
 		

@@ -27,6 +27,10 @@ def moveKeyPressed(event : Tuple[str, int | str]):
 	return event[0] == 'InputPressed'\
 		and event[1] in ('w', 'a', 's', 'd')\
 		and inputManager.GetKey(event[1])
+def itemUse(event : Tuple[str, int | str]):
+	return event[0] == 'ItemUse'\
+		and event[1] in ('e', 'q')\
+		and inputManager.GetKeyDown(event[1])
 def notMove(event : Tuple[str, int | str]):
 	return event[0] == 'NotMove'
 def endAnimation(event : Tuple[str, int | str]):
@@ -57,7 +61,7 @@ class Idle(State):
 		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		if (sc.generateReached
-				and sc.energy >= 5
+				and sc.energyCount >= 5
 				and sp.name == 'Lumberjack'
 				and inputManager.GetKey('e')
 		):
@@ -65,7 +69,11 @@ class Idle(State):
 			if sc.evolutionTimer.x >= sc.evolutionTimer.y:
 				sc.evolutionTimer.x = 0.0
 				sc.SwapSprite()
-		
+		elif inputManager.GetKeyDown('e') and sc.tomatoCount > 0:
+			sc.statemachine.add_event(('ItemUse', 'e'))
+		elif inputManager.GetKeyDown('q') and sc.medikitCount > 0:
+			sc.statemachine.add_event(('ItemUse', 'q'))
+			
 		if inputManager.GetKeyUp('e'): sc.evolutionTimer.x = 0.0
 			
 		if Idle.onKey:
@@ -112,6 +120,11 @@ class Move(State):
 		if inputManager.GetKey('d'):
 			delta += Vector2(sc.hungry, 0); isMove = True
 			
+		if inputManager.GetKeyDown('e') and sc.tomatoCount > 0:
+			sc.statemachine.add_event(('ItemUse', 'e'))
+		elif inputManager.GetKeyDown('q') and sc.medikitCount > 0:
+			sc.statemachine.add_event(('ItemUse', 'q'))
+		
 		flip : str = 'None'
 		if delta == Vector2(0, 0):
 			sc.statemachine.add_event(('NotMove', isMove))
@@ -142,7 +155,7 @@ class Attack(State):
 			sp.SetAction('attackCritical')
 			sp.SetActionSpeed('attackCritical', int(sc.hungry / 4))
 			if sp.name == 'Juggernaut': sp.SetOffset(Vector2(0, 20))
-			pass
+		sc.hungry = max(sc.hungry - 1.5, 0.0)
 		pass
 	
 	@staticmethod
@@ -233,6 +246,34 @@ class Damaged(State):
 		pass
 	pass
 
+
+class ItemUse(State):
+	@staticmethod
+	def enter(own: GameObject, event: Tuple[str, int | str]):
+		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
+		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
+		sp.SetAction('itemUse')
+		if event[1] == 'e':
+			sc.tomatoCount -= 1
+			sc.hungry = min(sc.hungry + 20.0, 100.0)
+		elif event[1] == 'q':
+			sc.medikitCount -= 1
+			sc.health = min(sc.health + 25.0, 100.0)
+		pass
+	
+	@staticmethod
+	def exit(own: GameObject, event: Tuple[str, int | str]):
+		pass
+	
+	@staticmethod
+	def do(own: GameObject):
+		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
+		if sp.action[sp.curAction].isComplete:
+			sc = own.GetComponent(Enums.ComponentType.Script)
+			sc.statemachine.add_event(('NotMove', True))
+		pass
+
+
 class LumberjackScript(Script):
 	def __init__(self):
 		super().__init__()
@@ -240,9 +281,12 @@ class LumberjackScript(Script):
 		
 		self.health : float = 100.0
 		self.hungry : float = 100.0
+		# self.isVenom : bool = False
 		
 		self.medikitCount : int = 0
 		self.tomatoCount : int = 0
+		
+		self.timberCount : int = 0
 		
 		self.energyCount : int = 0
 		self.generateReached : bool = False
@@ -266,6 +310,7 @@ class LumberjackScript(Script):
 				CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.EnemyAttackTrigger, True)
 				sp.image.opacify(1.0)
 		
+		self.hungry = max(self.hungry - 0.8 * timer.GetDeltaTime(), 0.0)
 		self.statemachine.Update()
 		pass
 
@@ -328,14 +373,18 @@ class LumberjackScript(Script):
 			{
 				Idle: {
 					moveKeyDown: Move, moveKeyPressed: Move, attackKeyDown: Attack, damaged : Damaged
+					, itemUse: ItemUse
 				},
 				Move: {
-					notMove: Idle, attackKeyDown: Attack, damaged : Damaged
+					notMove: Idle, attackKeyDown: Attack, damaged : Damaged, itemUse: ItemUse
 				},
 				Attack: {
 					endAnimation: Idle, moveKeyPressed: Move, damaged : Damaged
 				},
 				Damaged: {
+					notMove: Idle
+				},
+				ItemUse: {
 					notMove: Idle
 				},
 			}
