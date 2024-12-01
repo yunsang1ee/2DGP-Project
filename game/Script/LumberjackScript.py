@@ -26,7 +26,7 @@ def moveKeyPressed(event : Tuple[str, int | str]):
 		and inputManager.GetKey(event[1])
 def itemUse(event : Tuple[str, int | str]):
 	return event[0] == 'ItemUse'\
-		and event[1] in ('e', 'q')\
+		and event[1] in ('e', 'q', inputManager.kMouseRight)\
 		and inputManager.GetKeyDown(event[1])
 def notMove(event : Tuple[str, int | str]):
 	return event[0] == 'NotMove'
@@ -37,9 +37,6 @@ def damaged(event : Tuple[str, int]):
 def attackKeyDown(event : Tuple[str, int]):
 	return event[0] == 'Attack'\
 		and inputManager.GetKeyDown(inputManager.kMouseLeft)
-def boxKeyDown(event : Tuple[str, int]):
-	return event[0] == 'Box'\
-		and inputManager.GetKeyDown(inputManager.kMouseRight)
 
 class Idle(State):
 	onKey : bool = False
@@ -288,11 +285,19 @@ class Damaged(State):
 
 class ItemUse(State):
 	useKey : str = ''
+	position : Vector2 = Vector2(0, 0)
 	@staticmethod
 	def enter(own: GameObject, event: Tuple[str, int | str]):
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
-		sp.SetAction('itemUse')
 		ItemUse.useKey = event[1]
+		if event[1] == inputManager.kMouseRight:
+			from framework import Application
+			ItemUse.position = Vector2(*event[2]) + (Application.mainCamera.lookPosition - Application.app.screen // 2)
+			sp.SetAction('attackCritical')
+			sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
+			sp.SetActionSpeed('attackCritical', int(sc.hungry / 4))
+		else:
+			sp.SetAction('itemUse')
 		pass
 	
 	@staticmethod
@@ -310,7 +315,12 @@ class ItemUse(State):
 			elif ItemUse.useKey == 'q':
 				sc.medikitCount -= 1
 				sc.health = min(sc.health + 25.0, 100.0)
-			sc = own.GetComponent(Enums.ComponentType.Script)
+			elif ItemUse.useKey == inputManager.kMouseRight:
+				sc.timberCount -= 5
+				box : GameObject = Object.Instantiate(GameObject, Enums.LayerType.Obstacle, ItemUse.position)
+				from game.Script.SuppliesScript import BoxScript
+				scBox : BoxScript = box.AddComponent(BoxScript); scBox.Init()
+				
 			sc.statemachine.add_event(('NotMove', True))
 		pass
 
@@ -327,9 +337,9 @@ class LumberjackScript(Script):
 		self.medikitCount : int = 0
 		self.tomatoCount : int = 0
 		
-		self.timberCount : int = 0
+		self.timberCount : int = 510
 		
-		self.energyCount : int = 50
+		self.energyCount : int = 0
 		self.generateReached : bool = False
 		self.evolutionTimer : Vector2 = Vector2(0.0, 5.0)
 		
@@ -346,8 +356,13 @@ class LumberjackScript(Script):
 		
 		if inputDown(inputManager.kMouseLeft):
 			self.statemachine.add_event(('Attack', inputManager.kMouseLeft))
-		if inputDown(inputManager.kMouseRight):
-			self.statemachine.add_event(('Box', inputManager.kMouseRight))
+		from framework import Application
+		mousePos = inputManager.GetMousePosition()
+		if (inputDown(inputManager.kMouseRight)
+				and self.timberCount >= 5
+				and (mousePos - Application.mainCamera.CalculatePosition(
+					self.GetOwner().GetComponent(Enums.ComponentType.Transform).GetPosition())).length() < 100.0):
+			self.statemachine.add_event(('ItemUse', inputManager.kMouseRight, mousePos))
 		
 		sp: Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
 		if Damaged.damagedTimer.x < Damaged.damagedTimer.y:

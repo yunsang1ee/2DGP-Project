@@ -30,7 +30,7 @@ class MainScene(Scene.Scene):
 		self.bossGenTimer : Vector2 = Vector2(0, 300.0)
 		self.bossHighlightTimer : Vector2 = Vector2(0, 5.0)
 		# 50 MPM(mob per minute) -> bossTimer == 10 minute -> (50 * 0.2 = 10) * 10 = 100 -> 100 * 0.1 = 10 energy
-		self.suppliesGenTimer : Vector2 = Vector2(1.1, 1.0)
+		self.suppliesGenTimer : Vector2 = Vector2(11.0, 10.0)
 		self.font20 : Font = load_font('game/resource/establishThornFont.ttf', 20)
 		self.font40 : Font = load_font('game/resource/establishThornFont.ttf', 40)
 		self.font72 : Font = load_font('game/resource/establishThornFont.ttf', 72)

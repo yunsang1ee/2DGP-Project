@@ -95,6 +95,8 @@ class Move(State):
 	
 	@staticmethod
 	def exit(own: GameObject, event: Tuple[str, int | str]):
+		sc : MonsterScript = own.GetComponent(Enums.ComponentType.Script)
+		sc.randMoveDir = None
 		pass
 	
 	@staticmethod
@@ -122,11 +124,18 @@ class Move(State):
 				sc.randMoveTimer.y = random.uniform(0.5, 2.0)
 				sc.statemachine.add_event(('PlayerMissing', 0))
 			else:
-				tr.SetPosition(myPos + sc.randMoveDir.normalize() * sc.speed * timer.GetDeltaTime() * Move.isNotBossHighlight)
-				if (playerPos - myPos).length() <= sc.speed * 10.0:
-					sc.randMoveTimer.x = 0.0
-					sc.statemachine.add_event(('PlayerFound', True))
-				
+				nextPos = myPos + sc.randMoveDir.normalize() * sc.speed * timer.GetDeltaTime() * Move.isNotBossHighlight
+				if sc.inObstacle:
+					tr.SetPosition(sc.prevPos)
+					sc.statemachine.add_event(('PlayerFound', False))
+				else:
+					sc.prevPos = myPos
+					tr.SetPosition(nextPos)
+					myPos = tr.GetPosition()
+					if (playerPos - myPos).length() <= sc.speed * 10.0 if sp.name != "Boss" else 10000.0:
+						sc.randMoveTimer.x = 0.0
+						sc.statemachine.add_event(('PlayerFound', True))
+					
 		pass
 	
 class Attack(State):
@@ -256,6 +265,8 @@ class MonsterScript(Script, ABC):
 		self.attackTrigger : AttackTrigger | bool | None = None
 		self.randMoveTimer : Vector2 = Vector2(0, 0.5)
 		self.randMoveDir : Vector2 | None = None
+		self.prevPos : Vector2 | None = None
+		self.inObstacle : bool = False
 	@abstractmethod
 	def Init(self):
 		pass
@@ -278,16 +289,16 @@ class ZombieScript(MonsterScript):
 		pass
 	
 	def OnCollisionEnter(self, other: 'Collider'):
-		from game.Script.LumberjackScript import AttackTrigger
 		otherObj : GameObject | AttackTrigger = other.GetOwner()
 		
 		if otherObj.GetLayer() == Enums.LayerType.AttackTrigger and self.statemachine.cur_state is not Damaged:
 			self.health -= otherObj.damage
 			self.statemachine.add_event(('Damaged', self.health))
+		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
+			self.inObstacle = True
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
-		from game.Script.LumberjackScript import AttackTrigger
 		otherObj : GameObject | AttackTrigger = other.GetOwner()
 		if (otherObj.GetLayer() == Enums.LayerType.Player
 				or (otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is None)):
@@ -295,6 +306,9 @@ class ZombieScript(MonsterScript):
 		pass
 	
 	def OnCollisionExit(self, other: 'Collider'):
+		otherObj : GameObject | AttackTrigger = other.GetOwner()
+		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
+			self.inObstacle = False
 		pass
 
 	def Init(self):
@@ -380,6 +394,9 @@ class WarthogScript(MonsterScript):
 		pass
 	
 	def OnCollisionExit(self, other: 'Collider'):
+		otherObj : GameObject | AttackTrigger = other.GetOwner()
+		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
+			self.inObstacle = False
 		pass
 	
 	def Init(self):
@@ -453,6 +470,8 @@ class BossScript(MonsterScript):
 		      and sp.curAction != 'special2'):
 			self.health -= otherObj.damage
 			self.statemachine.add_event(('Damaged', self.health))
+		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
+			self.inObstacle = True
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
@@ -463,6 +482,9 @@ class BossScript(MonsterScript):
 		pass
 	
 	def OnCollisionExit(self, other: 'Collider'):
+		otherObj : GameObject | AttackTrigger = other.GetOwner()
+		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
+			self.inObstacle = False
 		pass
 	
 	def Init(self):

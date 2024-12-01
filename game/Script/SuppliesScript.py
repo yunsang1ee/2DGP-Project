@@ -5,7 +5,6 @@ from timeit import repeat
 from pygame import Vector2
 
 from framework.Common import Enums, Object
-from framework.Common.Enums import LayerType
 from framework.Common.InputManager import inputManager
 from framework.Common.Timer import timer
 from framework.Component.Collider.BoxCollider2D import BoxCollider2D
@@ -36,11 +35,11 @@ class MedikitScript(SuppliesScript):
 		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Medikit.png")
 		sp.AddAction('drop', 0, 10, 6
-		             , Vector2(65, 329), Vector2(64, 198), '', repeat=False)
+					 , Vector2(65, 329), Vector2(64, 198), '', repeat=False)
 		sp.AddAction('idle', 0, 1, 1
-		             , Vector2(65, 528), Vector2(64, 66), '', repeat=False)
+					 , Vector2(65, 528), Vector2(64, 66), '', repeat=False)
 		sp.AddAction('touched', 0, 6, 3
-		             , Vector2(65, 65), Vector2(128, 64), '', 20, False)
+					 , Vector2(65, 65), Vector2(128, 64), '', 20, False)
 		sp.SetAction('drop')
 		sp.SetOffset(Vector2(0, 81))
 		cd : BoxCollider2D = self.GetOwner().AddComponent(BoxCollider2D)
@@ -100,11 +99,11 @@ class TomatoScript(SuppliesScript):
 		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Tomato.png")
 		sp.AddAction('drop', 0, 13, 6
-		             , Vector2(65, 528), Vector2(64, 198), '', repeat=False)
+					 , Vector2(65, 528), Vector2(64, 198), '', repeat=False)
 		sp.AddAction('idle', 0, 1, 1
-		             , Vector2(65, 727), Vector2(72, 64), '', repeat=False)
+					 , Vector2(65, 727), Vector2(72, 64), '', repeat=False)
 		sp.AddAction('touched', 0, 6, 3
-		             , Vector2(65, 65), Vector2(128, 64), '', 20, False)
+					 , Vector2(65, 65), Vector2(128, 64), '', 20, False)
 		sp.SetAction('drop')
 		sp.SetOffset(Vector2(0, 77))
 		cd : BoxCollider2D = self.GetOwner().AddComponent(BoxCollider2D)
@@ -155,7 +154,7 @@ class TimberScript(SuppliesScript):
 		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Timber.png")
 		sp.AddAction('1', 0, 1, 1
-		             , Vector2(0, 0), Vector2(48, 41), '', repeat=False)
+					 , Vector2(0, 0), Vector2(48, 41), '', repeat=False)
 		cd : BoxCollider2D = self.GetOwner().AddComponent(BoxCollider2D)
 		cd.SetSize(Vector2(0.48, 0.41))
 		pass
@@ -193,9 +192,9 @@ class TreeScript(SuppliesScript):
 		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Tree.png")
 		sp.AddAction('1', 0, 1, 1
-		             , Vector2(0, 0), Vector2(265, 408), '', repeat=False)
+					 , Vector2(0, 0), Vector2(265, 408), '', repeat=False)
 		sp.AddAction('2', 0, 1, 1
-		             , Vector2(266, 0), Vector2(265, 408), '', repeat=False)
+					 , Vector2(266, 0), Vector2(265, 408), '', repeat=False)
 		sp.SetAction(str(randint(1, 2)))
 		sp.SetOffset(Vector2(0, 120 * 0.6))
 		
@@ -223,7 +222,7 @@ class TreeScript(SuppliesScript):
 				for _ in range(randint(2, 3)):
 					tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
 					timber = Object.Instantiate(GameObject, Enums.LayerType.Supplies
-					                            , tr.GetPosition() + Vector2(randint(-10, 10), randint(-10, 10)))
+												, tr.GetPosition() + Vector2(randint(-10, 10), randint(-10, 10)))
 					sc = timber.AddComponent(TimberScript); sc.Init()
 				Object.Destroy(self.GetOwner())
 		pass
@@ -237,12 +236,29 @@ class TreeScript(SuppliesScript):
 class BoxScript(SuppliesScript):
 	def __init__(self):
 		super().__init__()
+		self.health : float = 50.0
+		self.damagedTimer : Vector2 = Vector2(1.1, 1.0)
 		pass
 	
 	def Init(self):
+		sp: Sprite = self.GetOwner().AddComponent(Sprite)
+		sp.SetImage("Box.png")
+		sp.AddAction('1', 0, 9, 3
+					 , Vector2(83, 216), Vector2(109, 107), '', 0, False)
+		cd : BoxCollider2D = self.GetOwner().AddComponent(BoxCollider2D)
+		cd.SetOffset(Vector2(0, -25) * 0.5)
+		cd.SetSize(Vector2(1.0, 0.5) * 0.5)
+		
+		tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
+		tr.SetScale(Vector2(0.5, 0.5))
 		pass
 	
 	def Update(self):
+		if self.damagedTimer.x < self.damagedTimer.y:
+			self.damagedTimer.x += timer.GetDeltaTime()
+		else:
+			sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+			sp.image.opacify(1.0)
 		pass
 	
 	def LateUpdate(self):
@@ -252,6 +268,16 @@ class BoxScript(SuppliesScript):
 		pass
 	
 	def OnCollisionEnter(self, other: 'Collider'):
+		otherObj = other.GetOwner()
+		if otherObj.GetLayer() in (Enums.LayerType.EnemyAttackTrigger, Enums.LayerType.EnemyAttackTrigger)\
+			and self.damagedTimer.x >= self.damagedTimer.y:
+			sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+			sp.image.opacify(0.7)
+			#self.damagedTimer.x = 0.0
+			self.health -= otherObj.damage
+			print(self.health)
+			if self.health <= 0:
+				Object.Destroy(self.GetOwner())
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
@@ -271,11 +297,11 @@ class EnergyEggScript(SuppliesScript):
 		sp : Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Egg.png")
 		sp.AddAction('spawnSphere', 0, 8, 6
-		             , Vector2(65, 147), Vector2(72, 72), '', repeat=False)
+					 , Vector2(65, 147), Vector2(72, 72), '', repeat=False)
 		sp.AddAction('idle2', 0, 5, 6
-		             , Vector2(65, 220), Vector2(72, 72), '', repeat=False)
+					 , Vector2(65, 220), Vector2(72, 72), '', repeat=False)
 		sp.AddAction('idle', 0, 6, 6
-		             , Vector2(65, 293), Vector2(72, 72), '', repeat=False)
+					 , Vector2(65, 293), Vector2(72, 72), '', repeat=False)
 		pass
 
 	def Update(self):
@@ -321,9 +347,9 @@ class EnergyScript(SuppliesScript):
 		sp : Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Energy_Sphere.png")
 		sp.AddAction('touched', 0, 10,6
-		             , Vector2(65, 74), Vector2(72, 72), '', 20, False)
+					 , Vector2(65, 74), Vector2(72, 72), '', 20, False)
 		sp.AddAction('idle', 0, 4,6
-		             , Vector2(65, 147), Vector2(72, 72), '')
+					 , Vector2(65, 147), Vector2(72, 72), '')
 		pass
 
 	def Update(self):
@@ -369,13 +395,13 @@ class GeneratorScript(SuppliesScript):
 		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Generator.png")
 		sp.AddAction('spawn', 0, 5, 6
-		             , Vector2(65, 325), Vector2(64, 64), '', repeat=False)
+					 , Vector2(65, 325), Vector2(64, 64), '', repeat=False)
 		sp.AddAction('idle', 0, 3, 6
-		             , Vector2(65, 390), Vector2(64, 64), '')
+					 , Vector2(65, 390), Vector2(64, 64), '')
 		sp.AddAction('action', 0, 5, 6
-		             , Vector2(65, 260), Vector2(64, 64), '')
+					 , Vector2(65, 260), Vector2(64, 64), '')
 		sp.AddAction('death', 0, 9, 6
-		             , Vector2(65, 65), Vector2(68, 64), '', repeat=False)
+					 , Vector2(65, 65), Vector2(68, 64), '', repeat=False)
 		sp.SetAction('spawn')
 		
 		cd : BoxCollider2D = self.GetOwner().AddComponent(BoxCollider2D)

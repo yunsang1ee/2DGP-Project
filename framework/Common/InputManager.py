@@ -36,6 +36,9 @@ class InputManager:
             code &= 0x01FF
             code = 128 + (code - 0x0039)
         return code
+    
+    def GetMousePosition(self):
+        return self.__mousePosition
 
     def GetKeyDown(self, code : int | str):
         code = self.keyCodeOffset(code)
