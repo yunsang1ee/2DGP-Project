@@ -22,6 +22,8 @@ class BoxCollider2D(Collider):
 		
 		tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
 		position = tr.GetPosition() + self.GetOffset()
+		from framework.Application import mainCamera
+		if mainCamera: position = mainCamera.CalculatePosition(position)
 		size = self.GetSize() * 100 // 2
 		draw_rectangle  (position.x - size.x
 		               , position.y - size.y

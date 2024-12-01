@@ -54,13 +54,17 @@ class Sprite(Component):
 			info = self.action[self.curAction]
 			left = int(info.offset.x + (int(info.curFrame) % info.frameWidth) * (info.size.x + 1))
 			bottom = int(info.offset.y - (int(info.curFrame) // info.frameWidth) * (info.size.y + 1))
+			position = tr.GetPosition()
+			from framework.Application import mainCamera
+			if mainCamera:
+				position = mainCamera.CalculatePosition(position)
 			scale = tr.GetScale()
 			# print(f'{left=}, {bottom=}')
 			self.image.clip_composite_draw(left, bottom
 			                               , int(info.size.x), int(info.size.y)
 			                               , tr.GetRotation()
 			                               , info.flip
-			                               , tr.GetPosition().x + self.offset.x, tr.GetPosition().y + self.offset.y
+			                               , position.x + self.offset.x, position.y + self.offset.y
 			                               , int(info.size.x * scale.x), int(info.size.y * scale.y))
 		pass
 	

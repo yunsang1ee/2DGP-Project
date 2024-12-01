@@ -14,6 +14,7 @@ from framework.Component.Sprite import Sprite
 from framework.Component.Transform import Transform
 from framework.GameObject.GameObject import GameObject
 from game.Script.LumberjackScript import AttackTrigger
+from game.Script.SuppliesScript import EnergyEggScript
 
 
 def playerFound(event : Tuple[str, int | str]):
@@ -172,7 +173,10 @@ class Damaged(State):
 	def enter(own: GameObject, event: Tuple[str, int | str]):
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		if event[1] <= 0.0:
-			sp.SetAction('death')
+			if sp.name == 'Warthog' and randint(1, 10000) <= 10000:
+				sp.SetAction('special')
+			else:
+				sp.SetAction('death')
 		else:
 			sp.SetAction('idle')
 			sp.image.opacify(0.7)
@@ -195,8 +199,9 @@ class Damaged(State):
 				if sc is ZombieScript : scene.ReturnZombie(own)
 				elif sc is WarthogScript : scene.ReturnWarthog(own)
 			elif sp.curAction == 'special':
-				
-				#TODO: Warthog Egg Instantiate
+				tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
+				egg = Object.Instantiate(GameObject, Enums.LayerType.Supplies, tr.GetPosition())
+				sc = egg.AddComponent(EnergyEggScript); sc.Init()
 
 				own.SetState(GameObject.State.Paused)
 				scene : MainScene = app.activeScene
@@ -289,7 +294,7 @@ class ZombieScript(MonsterScript):
 					playerFound: Move, reached: Attack, damaged: Damaged
 				},
 				Move: {
-					playerMissing: Idle, reached: Attack, damaged: Damaged
+					playerMissing: Idle, playerFound: Move, reached: Attack, damaged: Damaged
 				},
 				Attack: {
 					endAnimation: Idle, playerFound: Move, damaged: Damaged
@@ -370,7 +375,7 @@ class WarthogScript(MonsterScript):
 					playerFound: Move, reached: Attack, damaged: Damaged
 				},
 				Move: {
-					playerMissing: Idle, reached: Attack, damaged: Damaged
+					playerMissing: Idle, playerFound: Move, reached: Attack, damaged: Damaged
 				},
 				Attack: {
 					endAnimation: Idle, playerFound: Move, damaged: Damaged

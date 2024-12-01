@@ -32,6 +32,10 @@ class GameObject:
         pass
  
     def AddComponent(self, component: Component) -> Component:
+        """
+
+        :rtype: object
+        """
         component = component()
         component.SetOwner(self)
         self.components[component.GetType().value] = component
