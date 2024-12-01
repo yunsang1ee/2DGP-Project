@@ -6,14 +6,16 @@ from pygame import Vector2
 from framework.Application import app
 from framework.Common import Object, Enums
 from framework.Common.Timer import timer
+from framework.Component.Camera import Camera
 from framework.Component.Collider.CollisionManager import CollisionManager
+from framework.Component.Component import Component
 from framework.Component.Sprite import Sprite
 from framework.Component.Transform import Transform
 from framework.GameObject.GameObject import GameObject
 from framework.Scene import Scene
 from game.Script.LumberjackScript import LumberjackScript
 from game.Script.MonsterScripts import ZombieScript, WarthogScript
-from game.Script.SuppliesScript import TomatoScript, MedikitScript, TreeScript
+from game.Script.SuppliesScript import TomatoScript, MedikitScript, TreeScript, GeneratorScript
 from game.Script.UIScript import UIScript
 
 class MainScene(Scene.Scene):
@@ -74,19 +76,26 @@ class MainScene(Scene.Scene):
 				sc = tomato.AddComponent(TomatoScript);sc.Init()
 			
 			special = randint(1, 10000)
-			if special < 1295:
+			if special <= 1294:
 				medikit = Object.Instantiate(GameObject, Enums.LayerType.Supplies, Vector2(
 					randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
 					, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y)))))
 				sc = medikit.AddComponent(MedikitScript);sc.Init()
 				
 			special = randint(1, 10000)
-			if special < 3334:
+			if special <= 3333:
 				for _ in range(randint(2, 3)):
 					tree = Object.Instantiate(GameObject, Enums.LayerType.Tree, Vector2(
 						randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
 						, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y)))))
 					sc : TreeScript = tree.AddComponent(TreeScript); sc.Init()
+					
+			special = randint(1, 10000)
+			if special <= 10000:
+				generator = Object.Instantiate(GameObject, Enums.LayerType.Supplies, Vector2(
+					randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
+					, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y)))))
+				sc : GeneratorScript = generator.AddComponent(GeneratorScript); sc.Init()
 	
 	def genEnemy(self):
 		self.enemyGenTimer.x += timer.GetDeltaTime()
@@ -96,7 +105,7 @@ class MainScene(Scene.Scene):
 				special = randint(1, 10000)
 				enemy: GameObject = None
 				sc = None
-				if special < 0:
+				if special <= 8000:
 					if len(self.zombies) > 0:
 						enemy = self.zombies.pop()
 						sc: ZombieScript = enemy.GetComponent(Enums.ComponentType.Script)
@@ -150,6 +159,12 @@ class MainScene(Scene.Scene):
 		
 		self.player: GameObject = Object.Instantiate(GameObject, Enums.LayerType.Player, app.screen // 2)
 		sc: LumberjackScript = self.player.AddComponent(LumberjackScript); sc.Init()
+		
+		camera = Object.Instantiate(GameObject, Enums.LayerType.Camera)
+		
+		from framework import Application
+		Application.mainCamera = camera.AddComponent(Camera)
+		Application.mainCamera.SetTarget(self.player)
 		
 		for _ in range(120):
 			zombie : GameObject = Object.Instantiate(GameObject, Enums.LayerType.Enemy, Vector2())

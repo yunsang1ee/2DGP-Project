@@ -76,7 +76,8 @@ class InputManager:
         elif event.type == SDL_MOUSEBUTTONUP:
             self.__keys[351 + event.button] |= InputManager.KeyState.kUpBit
         elif event.type == SDL_MOUSEMOTION:
-            self.__mousePosition = event.x,  - 1 - event.y
+            from framework.Application import app
+            self.__mousePosition = event.x, app.screen.y - event.y
         pass
     pass
 

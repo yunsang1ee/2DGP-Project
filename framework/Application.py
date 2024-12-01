@@ -1,6 +1,7 @@
 from pico2d import *
 from pygame import Vector2
 
+from framework.Component.Camera import Camera
 from framework.Component.Collider.CollisionManager import CollisionManager
 from framework.Scene import Scene
 from framework.Common.InputManager import inputManager
@@ -97,3 +98,4 @@ class Application:
         self.running = False
 
 app = Application()
+mainCamera : Camera = None

@@ -27,8 +27,9 @@ class CircleCollider(Collider):
 		if not self.isRender() : return
 		
 		tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
-		position = tr.GetPosition()
+		position = tr.GetPosition() + self.GetOffset()
+		from framework.Application import mainCamera
+		if mainCamera: position = mainCamera.CalculatePosition(position)
 		size = self.GetSize() * 100
-		offset = self.GetOffset()
 		draw_circle(position, min(size.x, size.y))
 		pass

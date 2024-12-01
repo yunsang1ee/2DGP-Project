@@ -4,19 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="Player Damaged State : complete&#10;Enemy class : 80%&#10;Boss class : 30%&#10;objectPool : complete&#10;app running &amp; Close : complete">
+    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="Enemy class : 90%&#10;Supplies class : 70%&#10;object class : 20%&#10;Boss class : 30%">
+      <change afterPath="$PROJECT_DIR$/framework/Component/Camera.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Common/Timer.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Timer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/Collider.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/Collider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/CollisionManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/CollisionManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Application.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Application.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Common/InputManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/InputManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/BoxCollider2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/BoxCollider2D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/CircleCollider.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/CircleCollider.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/Component/Sprite.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Sprite.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/GameObject/GameObject.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/GameObject/GameObject.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Scene/mainScene.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Scene/mainScene.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Script/LumberjackScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/LumberjackScript.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/Script/Monster.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/MonsterScripts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/resource/Warthog.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Warthog.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/resource/Zombie.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Zombie.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/resource/boss.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/boss.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/Script/MonsterScripts.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/MonsterScripts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/Script/SuppliesScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/SuppliesScript.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/Script/UIScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/UIScript.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/resource/Background.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Background.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,10 +69,11 @@
     "Python.GameObject.executor": "Run",
     "Python.InputManager.executor": "Run",
     "Python.Scene.executor": "Run",
+    "Python.asdasdas.executor": "Run",
     "Python.main.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/user/Documents/GitHub/2024-2DGP",
+    "last_opened_file_path": "C:/Users/user/PycharmProjects/2DGP-Project/game",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,17 +85,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\game" />
+      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\game\resource" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\game\Script" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\main" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\framework\Component" />
-      <recent name="C:\Users\user\PycharmProjects\2DGP-Project" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\game\resource" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\game" />
+      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\game\Scene" />
+      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\game\Script" />
       <recent name="C:\Users\user\PycharmProjects\2DGP-Project\main" />
-      <recent name="C:\Users\user\PycharmProjects\2DGP-Project" />
-      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\framework\Component\Collider" />
-      <recent name="C:\Users\user\PycharmProjects\2DGP-Project\main\Scene" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
@@ -111,29 +115,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="C:\Users\user\PycharmProjects\2DGP-Project\framework\Application.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="GameObject" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="2DGP-Project" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="C:\Users\user\PycharmProjects\2DGP-Project\framework\GameObject\GameObject.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -188,6 +169,29 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="asdasdas" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="2DGP-Project" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Desktop" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Desktop/asdasdas.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="2DGP-Project" />
       <option name="ENV_FILES" value="" />
@@ -214,10 +218,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.asdasdas" />
         <item itemvalue="Python.Application" />
         <item itemvalue="Python.InputManager" />
         <item itemvalue="Python.Scene" />
-        <item itemvalue="Python.GameObject" />
       </list>
     </recent_temporary>
   </component>
@@ -261,7 +265,7 @@
       <workItem from="1732091067442" duration="19883000" />
       <workItem from="1732196877119" duration="16278000" />
       <workItem from="1732424179131" duration="63486000" />
-      <workItem from="1732588474603" duration="614000" />
+      <workItem from="1732588474603" duration="122932000" />
     </task>
     <task id="LOCAL-00001" summary="2DGP 1차발표 자료 2021180026 이윤상">
       <option name="closed" value="true" />
@@ -399,7 +403,23 @@
       <option name="project" value="LOCAL" />
       <updated>1732477209222</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Player Damaged State : complete&#10;Enemy class : 90%&#10;object class : 20%&#10;Boss class : 30%">
+      <option name="closed" value="true" />
+      <created>1732899531257</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1732899531257</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Enemy class : 90%&#10;Supplies class : 70%&#10;object class : 20%&#10;Boss class : 30%">
+      <option name="closed" value="true" />
+      <created>1732981502135</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1732981502135</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -435,7 +455,9 @@
     <MESSAGE value="AttackTrigger Collision" />
     <MESSAGE value="Timer debug&#10;BOX" />
     <MESSAGE value="Player Damaged State : complete&#10;Enemy class : 70%&#10;objectPool : complete&#10;app running &amp; Close : complete" />
-    <option name="LAST_COMMIT_MESSAGE" value="Player Damaged State : complete&#10;Enemy class : 70%&#10;objectPool : complete&#10;app running &amp; Close : complete" />
+    <MESSAGE value="Player Damaged State : complete&#10;Enemy class : 90%&#10;object class : 20%&#10;Boss class : 30%" />
+    <MESSAGE value="Enemy class : 90%&#10;Supplies class : 70%&#10;object class : 20%&#10;Boss class : 30%" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enemy class : 90%&#10;Supplies class : 70%&#10;object class : 20%&#10;Boss class : 30%" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -454,6 +476,7 @@
     <SUITE FILE_PATH="coverage/main_py$InputManager.coverage" NAME="InputManager Coverage Results" MODIFIED="1729814157361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$Application.coverage" NAME="Application Coverage Results" MODIFIED="1729817860374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$GameObject.coverage" NAME="GameObject Coverage Results" MODIFIED="1729798220032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1732544554637" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1733049583651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/main_py$asdasdas.coverage" NAME="asdasdas Coverage Results" MODIFIED="1732810416697" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Desktop" />
   </component>
 </project>

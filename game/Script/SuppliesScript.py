@@ -6,8 +6,10 @@ from pygame import Vector2
 
 from framework.Common import Enums, Object
 from framework.Common.Enums import LayerType
+from framework.Common.InputManager import inputManager
 from framework.Common.Timer import timer
 from framework.Component.Collider.BoxCollider2D import BoxCollider2D
+from framework.Component.Collider.CircleCollider import CircleCollider
 from framework.Component.Script import Script
 from framework.Component.Sprite import Sprite
 from framework.Component.Transform import Transform
@@ -232,7 +234,6 @@ class TreeScript(SuppliesScript):
 	def OnCollisionExit(self, other: 'Collider'):
 		pass
 
-
 class EnergyEggScript(SuppliesScript):
 	def __init__(self):
 		super().__init__()
@@ -242,28 +243,31 @@ class EnergyEggScript(SuppliesScript):
 	def Init(self):
 		sp : Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Egg.png")
-		sp.AddAction('idle', 0, 6, 6
-		             , Vector2(65, 293), Vector2(72, 72), '', repeat=False)
-		sp.AddAction('idle2', 0, 5, 6
-		             , Vector2(65, 220), Vector2(72, 72), '', repeat=False)
 		sp.AddAction('spawnSphere', 0, 8, 6
 		             , Vector2(65, 147), Vector2(72, 72), '', repeat=False)
+		sp.AddAction('idle2', 0, 5, 6
+		             , Vector2(65, 220), Vector2(72, 72), '', repeat=False)
+		sp.AddAction('idle', 0, 6, 6
+		             , Vector2(65, 293), Vector2(72, 72), '', repeat=False)
 		pass
 
 	def Update(self):
-		sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Script)
+		sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
 		if sp.curAction == 'spawnSphere':
 			if sp.action[sp.curAction].isComplete:
-				sphere = Object.Instantiate(GameObject, Enums.LayerType.Supplies)
+				tr = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
+				sphere = Object.Instantiate(GameObject, Enums.LayerType.Supplies, tr.GetPosition())
 				sc = sphere.AddComponent(EnergyScript); sc.Init()
-				cd : BoxCollider2D = self.GetOwner().AddComponent(BoxCollider2D)
-				cd.SetOffset(Vector2(0, 16))
-				cd.SetSize(Vector2(0.43, 0.41))
+				cd : CircleCollider = sphere.AddComponent(CircleCollider)
+				cd.SetOffset(Vector2(0, -16))
+				cd.SetSize(Vector2(0.15, 0.15))
 				Object.Destroy(self.GetOwner())
 		else:
 			self.spawnSphereTimer.x += timer.GetDeltaTime()
 			if self.spawnSphereTimer.x >= self.spawnSphereTimer.y:
 				sp.SetAction('spawnSphere')
+			elif sp.action[sp.curAction].isComplete:
+				sp.SetAction('idle' if randint(1, 10000) <= 7000 else 'idle2')
 		pass
 	
 	def LateUpdate(self):
@@ -281,7 +285,6 @@ class EnergyEggScript(SuppliesScript):
 	def OnCollisionExit(self, other: 'Collider'):
 		pass
 
-
 class EnergyScript(SuppliesScript):
 	def __init__(self):
 		super().__init__()
@@ -290,13 +293,17 @@ class EnergyScript(SuppliesScript):
 	def Init(self):
 		sp : Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Energy_Sphere.png")
+		sp.AddAction('touched', 0, 10,6
+		             , Vector2(65, 74), Vector2(72, 72), '', 20, False)
 		sp.AddAction('idle', 0, 4,6
 		             , Vector2(65, 147), Vector2(72, 72), '')
-		sp.AddAction('touched', 0, 10,6
-		             , Vector2(65, 74), Vector2(72, 72), '')
 		pass
 
 	def Update(self):
+		sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+		if sp.curAction == 'touched' and sp.action[sp.curAction].isComplete:
+			Object.Destroy(self.GetOwner())
+			
 		pass
 	
 	def LateUpdate(self):
@@ -311,7 +318,8 @@ class EnergyScript(SuppliesScript):
 			from game.Script.LumberjackScript import LumberjackScript
 			sc : LumberjackScript = otherObj.GetComponent(Enums.ComponentType.Script)
 			sc.energyCount += 1
-			Object.Destroy(self.GetOwner())
+			sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+			sp.SetAction('touched')
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
@@ -320,16 +328,38 @@ class EnergyScript(SuppliesScript):
 	def OnCollisionExit(self, other: 'Collider'):
 		pass
 	
-	
-class Generator(SuppliesScript):
+class GeneratorScript(SuppliesScript):
 	def __init__(self):
 		super().__init__()
 		pass
 	
 	def Init(self):
+		sp: Sprite = self.GetOwner().AddComponent(Sprite)
+		sp.SetImage("Generator.png")
+		sp.AddAction('spawn', 0, 5, 6
+		             , Vector2(65, 325), Vector2(64, 64), '', repeat=False)
+		sp.AddAction('idle', 0, 3, 6
+		             , Vector2(65, 390), Vector2(64, 64), '')
+		sp.AddAction('action', 0, 5, 6
+		             , Vector2(65, 260), Vector2(64, 64), '')
+		sp.AddAction('death', 0, 9, 6
+		             , Vector2(65, 65), Vector2(68, 64), '', repeat=False)
+		sp.SetAction('spawn')
+		
+		cd : BoxCollider2D = self.GetOwner().AddComponent(BoxCollider2D)
+		cd.SetSize(Vector2(0.0, 0.0))
+		cd.SetOffset(Vector2(-10000.0, -10000.0))
 		pass
 	
 	def Update(self):
+		sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+		if sp.action[sp.curAction].isComplete:
+			if sp.curAction == 'spawn':
+				cd : BoxCollider2D = self.GetOwner().GetComponent(Enums.ComponentType.Collider)
+				cd.SetSize(Vector2(0.4, 0.5))
+				cd.SetOffset(Vector2(0, 7))
+			elif sp.curAction == 'death':
+				Object.Destroy(self.GetOwner())
 		pass
 	
 	def LateUpdate(self):
@@ -339,10 +369,29 @@ class Generator(SuppliesScript):
 		pass
 	
 	def OnCollisionEnter(self, other: 'Collider'):
+		otherObj = other.GetOwner()
+		if otherObj.GetLayer() == Enums.LayerType.Player:
+			sc : LumberjackScript = otherObj.GetComponent(Enums.ComponentType.Script)
+			sc.generateReached = True
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
+		otherObj = other.GetOwner()
+		if otherObj.GetLayer() == Enums.LayerType.Player:
+			otherSP : Sprite = otherObj.GetComponent(Enums.ComponentType.Sprite)
+			sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+			if otherSP.name == 'Juggernaut' and sp.curAction == 'action':
+				sp.SetAction('death')
+			elif otherSP.name == 'Lumberjack' and sp.curAction != 'action' and inputManager.GetKey('e'):
+				sp.SetAction('action')
 		pass
 	
 	def OnCollisionExit(self, other: 'Collider'):
+		otherObj = other.GetOwner()
+		if otherObj.GetLayer() == Enums.LayerType.Player:
+			sc : LumberjackScript = otherObj.GetComponent(Enums.ComponentType.Script)
+			sc.generateReached = False
+			otherSP : Sprite = otherObj.GetComponent(Enums.ComponentType.Sprite)
+			sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+			if otherSP.name == 'Lumberjack': sp.SetAction('idle')
 		pass

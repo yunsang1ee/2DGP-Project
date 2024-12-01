@@ -54,6 +54,8 @@ class Idle(State):
 	
 	@staticmethod
 	def exit(own, event):
+		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
+		sc.evolutionTimer.x = 0.0
 		pass
 		
 	@staticmethod
@@ -68,13 +70,13 @@ class Idle(State):
 			sc.evolutionTimer.x += timer.GetDeltaTime()
 			if sc.evolutionTimer.x >= sc.evolutionTimer.y:
 				sc.evolutionTimer.x = 0.0
+				sc.hungry = 100.0
+				sc.health = 100.0
 				sc.SwapSprite()
 		elif inputManager.GetKeyDown('e') and sc.tomatoCount > 0:
 			sc.statemachine.add_event(('ItemUse', 'e'))
 		elif inputManager.GetKeyDown('q') and sc.medikitCount > 0:
 			sc.statemachine.add_event(('ItemUse', 'q'))
-			
-		if inputManager.GetKeyUp('e'): sc.evolutionTimer.x = 0.0
 			
 		if Idle.onKey:
 			inputPressed = inputManager.GetKey
@@ -142,6 +144,7 @@ class AttackTrigger(GameObject) :
 
 class Attack(State):
 	AttackTrigger : AttackTrigger = None
+	enterPos : Vector2 = None
 	@staticmethod
 	def enter(own: GameObject, event: Tuple[str, int | str]):
 		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
@@ -154,7 +157,10 @@ class Attack(State):
 			sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 			sp.SetAction('attackCritical')
 			sp.SetActionSpeed('attackCritical', int(sc.hungry / 4))
-			if sp.name == 'Juggernaut': sp.SetOffset(Vector2(0, 20))
+			if sp.name == 'Juggernaut':
+				sp.SetOffset(Vector2(0, 20))
+				tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
+				Attack.enterPos = tr.GetPosition()
 		sc.hungry = max(sc.hungry - 1.5, 0.0)
 		pass
 	
@@ -167,7 +173,7 @@ class Attack(State):
 		if (sp.name == 'Juggernaut') and (sp.curAction == 'attackCritical'):
 			cd : BoxCollider2D = own.GetComponent(Enums.ComponentType.Collider)
 			tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
-			tr.SetPosition(tr.GetPosition() + Vector2(cd.GetSize().x * (-110 if sp.action[sp.curAction].flip == '' else 110), 6))
+			tr.SetPosition(Attack.enterPos + Vector2(cd.GetSize().x * (-110 if sp.action[sp.curAction].flip == '' else 110), 6))
 			sp.SetOffset(Vector2(0, 0))
 		
 		pass
@@ -195,6 +201,14 @@ class Attack(State):
 			elif inputDown('d'): flip = ''
 			if flip != 'None':
 				sp.SetAllFlip(flip)
+				
+			if (sp.name == 'Juggernaut') and (sp.curAction == 'attackCritical'):
+				tr: Transform = own.GetComponent(Enums.ComponentType.Transform)
+				cd: BoxCollider2D = own.GetComponent(Enums.ComponentType.Collider)
+				tr.SetPosition(Attack.enterPos
+				               + (Vector2(cd.GetSize().x * (-110 if sp.action[sp.curAction].flip == '' else 110), 6)
+				               * sp.action[sp.curAction].curFrame / 8.0))
+				
 		elif Attack.AttackTrigger is None:
 			tr: Transform = own.GetComponent(Enums.ComponentType.Transform)
 			size: Vector2 = Vector2(0.3, 0.62)
@@ -248,17 +262,12 @@ class Damaged(State):
 
 
 class ItemUse(State):
+	useKey : str = ''
 	@staticmethod
 	def enter(own: GameObject, event: Tuple[str, int | str]):
-		sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		sp.SetAction('itemUse')
-		if event[1] == 'e':
-			sc.tomatoCount -= 1
-			sc.hungry = min(sc.hungry + 20.0, 100.0)
-		elif event[1] == 'q':
-			sc.medikitCount -= 1
-			sc.health = min(sc.health + 25.0, 100.0)
+		ItemUse.useKey = event[1]
 		pass
 	
 	@staticmethod
@@ -269,6 +278,13 @@ class ItemUse(State):
 	def do(own: GameObject):
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		if sp.action[sp.curAction].isComplete:
+			sc : LumberjackScript = own.GetComponent(Enums.ComponentType.Script)
+			if ItemUse.useKey == 'e':
+				sc.tomatoCount -= 1
+				sc.hungry = min(sc.hungry + 20.0, 100.0)
+			elif ItemUse.useKey == 'q':
+				sc.medikitCount -= 1
+				sc.health = min(sc.health + 25.0, 100.0)
 			sc = own.GetComponent(Enums.ComponentType.Script)
 			sc.statemachine.add_event(('NotMove', True))
 		pass
@@ -288,7 +304,7 @@ class LumberjackScript(Script):
 		
 		self.timberCount : int = 0
 		
-		self.energyCount : int = 0
+		self.energyCount : int = 5
 		self.generateReached : bool = False
 		self.evolutionTimer : Vector2 = Vector2(0.0, 5.0)
 		
@@ -300,17 +316,22 @@ class LumberjackScript(Script):
 		elif inputDown('a') : self.statemachine.add_event(('InputDown', 'a'))
 		elif inputDown('d') : self.statemachine.add_event(('InputDown', 'd'))
 		elif inputDown('s') : self.statemachine.add_event(('InputDown', 's'))
+		
+		if inputManager.GetKeyUp('e'): self.evolutionTimer.x = 0.0
+		
 		if inputDown(inputManager.kMouseLeft):
 			self.statemachine.add_event(('Attack', inputManager.kMouseLeft))
 		
+		sp: Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
 		if Damaged.damagedTimer.x < Damaged.damagedTimer.y:
 			Damaged.damagedTimer.x += timer.GetDeltaTime()
 			if Damaged.damagedTimer.x >= Damaged.damagedTimer.y:
-				sp: Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
 				CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.EnemyAttackTrigger, True)
 				sp.image.opacify(1.0)
 		
-		self.hungry = max(self.hungry - 0.8 * timer.GetDeltaTime(), 0.0)
+		if sp.name == 'Lumberjack':
+			self.hungry = max(self.hungry
+							  - (0.8 if self.statemachine.cur_state is Move else 0.4) * timer.GetDeltaTime(), 0.0)
 		self.statemachine.Update()
 		pass
 
@@ -324,7 +345,7 @@ class LumberjackScript(Script):
 	def OnCollisionEnter(self, other: 'Collider'):
 		otherObj = other.GetOwner()
 		if otherObj.GetLayer() == Enums.LayerType.EnemyAttackTrigger:
-			self.health -= otherObj.damage
+			if self.statemachine.cur_state is not Damaged: self.health -= otherObj.damage
 			self.statemachine.add_event(('Damaged', self.health))
 		pass
 	
@@ -342,32 +363,32 @@ class LumberjackScript(Script):
 		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Juggernaut.png")
 		sp.AddAction('idle', 0, 7, 6
-		             , Vector2(65, 3174), Vector2(72, 72), '')
+					 , Vector2(65, 3174), Vector2(72, 72), '')
 		sp.AddAction('move', 0, 12, 6
-		             , Vector2(65, 2992), Vector2(72, 72), '')
+					 , Vector2(65, 2992), Vector2(72, 72), '')
 		sp.AddAction('attack', 0, 16, 4
-		             , Vector2(65, 2846), Vector2(100, 72), '', repeat=False)
+					 , Vector2(65, 2846), Vector2(100, 72), '', repeat=False)
 		sp.AddAction('attackCritical', 0, 21, 2
-		             , Vector2(65, 2526), Vector2(204, 100), '', repeat=False)
+					 , Vector2(65, 2526), Vector2(204, 100), '', repeat=False)
 		sp.AddAction('death', 0, 29, 2
-		             , Vector2(65, 1415), Vector2(210, 100), '', repeat=False)
+					 , Vector2(65, 1415), Vector2(210, 100), '', repeat=False)
 		sp.SetAction('idle')
 		self.swapSprite = sp
 		
 		sp: Sprite = self.GetOwner().AddComponent(Sprite)
 		sp.SetImage("Lumberjack.png")
 		sp.AddAction('idle', 0, 6, 6
-		             , Vector2(67, 1423), Vector2(72, 72), '')
+					 , Vector2(67, 1423), Vector2(72, 72), '')
 		sp.AddAction('move', 0, 8, 6
-		             , Vector2(67, 1314), Vector2(72, 72), '')
+					 , Vector2(67, 1314), Vector2(72, 72), '')
 		sp.AddAction('attack', 0, 10, 4
-		             , Vector2(67, 1168), Vector2(96, 72), '', repeat=False)
+					 , Vector2(67, 1168), Vector2(96, 72), '', repeat=False)
 		sp.AddAction('attackCritical', 0, 15, 4
-		             , Vector2(67, 949), Vector2(96, 72), '', repeat=False)
+					 , Vector2(67, 949), Vector2(96, 72), '', repeat=False)
 		sp.AddAction('itemUse', 0, 13, 6
-		             , Vector2(67, 657), Vector2(72, 72), '', repeat=False)
+					 , Vector2(67, 657), Vector2(72, 72), '', repeat=False)
 		sp.AddAction('death', 0, 16, 3
-		             , Vector2(67, 438), Vector2(134, 72), '', repeat=False)
+					 , Vector2(67, 438), Vector2(134, 72), '', repeat=False)
 		self.statemachine = StateMachine(self.GetOwner(), Idle)
 		self.statemachine.set_transitions(
 			{
@@ -385,7 +406,7 @@ class LumberjackScript(Script):
 					notMove: Idle
 				},
 				ItemUse: {
-					notMove: Idle
+					notMove: Idle, damaged : Damaged
 				},
 			}
 		)
