@@ -30,6 +30,6 @@ class CircleCollider(Collider):
 		position = tr.GetPosition() + self.GetOffset()
 		from framework.Application import mainCamera
 		if mainCamera: position = mainCamera.CalculatePosition(position)
-		size = self.GetSize() * 100
+		size = self.GetSize() * 100 // 2
 		draw_circle(position, min(size.x, size.y))
 		pass

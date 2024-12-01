@@ -4,21 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="Enemy class : 90%&#10;Supplies class : 70%&#10;object class : 20%&#10;Boss class : 30%">
-      <change afterPath="$PROJECT_DIR$/framework/Component/Camera.py" afterDir="false" />
+    <list default="true" id="e450a7fd-d047-4926-ae32-c3d373119c04" name="Changes" comment="Enemy class : complete&#10;Supplies class : complete&#10;object class : complete&#10;Camera class : complete&#10;Boss class : 30%&#10;UI : complete&#10;Player Awakening : 90%">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Application.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Application.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Common/InputManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/InputManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/BoxCollider2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/BoxCollider2D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Common/Enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Common/Enums.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/Component/Collider/CircleCollider.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/CircleCollider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/Component/Sprite.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Sprite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/GameObject/GameObject.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/GameObject/GameObject.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/Collider.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/Collider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/Component/Collider/CollisionManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/framework/Component/Collider/CollisionManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Scene/mainScene.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Scene/mainScene.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Script/LumberjackScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/LumberjackScript.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Script/MonsterScripts.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/MonsterScripts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Script/SuppliesScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/SuppliesScript.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/Script/UIScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/Script/UIScript.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/resource/Background.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Background.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/resource/Egg.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Egg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/resource/Generator.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Generator.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/resource/boss.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/resource/Boss.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -265,7 +264,7 @@
       <workItem from="1732091067442" duration="19883000" />
       <workItem from="1732196877119" duration="16278000" />
       <workItem from="1732424179131" duration="63486000" />
-      <workItem from="1732588474603" duration="122932000" />
+      <workItem from="1732588474603" duration="152525000" />
     </task>
     <task id="LOCAL-00001" summary="2DGP 1차발표 자료 2021180026 이윤상">
       <option name="closed" value="true" />
@@ -419,7 +418,23 @@
       <option name="project" value="LOCAL" />
       <updated>1732981502135</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Enemy class : complete&#10;Supplies class : complete&#10;object class : complete&#10;Boss class : 30%&#10;UI : complete&#10;Player Awakening : 90%">
+      <option name="closed" value="true" />
+      <created>1733050308480</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1733050308480</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Enemy class : complete&#10;Supplies class : complete&#10;object class : complete&#10;Camera class : complete&#10;Boss class : 30%&#10;UI : complete&#10;Player Awakening : 90%">
+      <option name="closed" value="true" />
+      <created>1733050343114</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1733050343114</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -457,7 +472,10 @@
     <MESSAGE value="Player Damaged State : complete&#10;Enemy class : 70%&#10;objectPool : complete&#10;app running &amp; Close : complete" />
     <MESSAGE value="Player Damaged State : complete&#10;Enemy class : 90%&#10;object class : 20%&#10;Boss class : 30%" />
     <MESSAGE value="Enemy class : 90%&#10;Supplies class : 70%&#10;object class : 20%&#10;Boss class : 30%" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enemy class : 90%&#10;Supplies class : 70%&#10;object class : 20%&#10;Boss class : 30%" />
+    <MESSAGE value="&#10;Boss class : 30%&#10;Player Awakening : 90%" />
+    <MESSAGE value="Enemy class : complete&#10;Supplies class : complete&#10;object class : complete&#10;Boss class : 30%&#10;UI : complete&#10;Player Awakening : 90%" />
+    <MESSAGE value="Enemy class : complete&#10;Supplies class : complete&#10;object class : complete&#10;Camera class : complete&#10;Boss class : 30%&#10;UI : complete&#10;Player Awakening : 90%" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enemy class : complete&#10;Supplies class : complete&#10;object class : complete&#10;Camera class : complete&#10;Boss class : 30%&#10;UI : complete&#10;Player Awakening : 90%" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -476,7 +494,7 @@
     <SUITE FILE_PATH="coverage/main_py$InputManager.coverage" NAME="InputManager Coverage Results" MODIFIED="1729814157361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$Application.coverage" NAME="Application Coverage Results" MODIFIED="1729817860374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$GameObject.coverage" NAME="GameObject Coverage Results" MODIFIED="1729798220032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1733049583651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1733085617822" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/main_py$asdasdas.coverage" NAME="asdasdas Coverage Results" MODIFIED="1732810416697" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Desktop" />
   </component>
 </project>

@@ -4,7 +4,6 @@ from pygame import Vector2
 
 from framework.Common import Enums
 from framework.Common.Enums import ComponentType
-from framework.Common.InputManager import inputManager
 from framework.Component import Script
 from framework.Component.Component import Component
 

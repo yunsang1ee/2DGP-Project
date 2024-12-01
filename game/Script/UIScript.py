@@ -1,8 +1,11 @@
+from framework.Application import mainCamera
 from framework.Common import Enums
 from framework.Common.Timer import timer
 from framework.Component.Script import Script
 from framework.Component.Sprite import Sprite
+from framework.GameObject.GameObject import GameObject
 from game.Script.LumberjackScript import LumberjackScript
+from game.Script.MonsterScripts import BossScript
 
 
 class UIScript(Script):
@@ -21,12 +24,22 @@ class UIScript(Script):
 		scene = app.activeScene
 		playerSc : LumberjackScript = scene.player.GetComponent(Enums.ComponentType.Script)
 		app.activeScene.font40.draw(app.screen.x // 2, app.screen.y - 72, f'RunTime: {int(timer.runTime)}', (0, 0, 255))
-		app.activeScene.font40.draw(20, app.screen.y - 72, f'HP: {int(playerSc.health)}', (255, 0, 0))
+		app.activeScene.font40.draw(20, app.screen.y - 72, f'HP: {playerSc.health:.2f}', (255, 0, 0))
 		app.activeScene.font40.draw(20, app.screen.y - 144, f'HUN: {int(playerSc.hungry)}', (253, 126, 20))
 		app.activeScene.font40.draw(20, app.screen.y - 216, f'Tomato: {int(playerSc.tomatoCount)}', (220, 50, 69))
 		app.activeScene.font40.draw(20, app.screen.y - 288, f'Medikit: {int(playerSc.medikitCount)}', (255, 193, 7))
-		app.activeScene.font40.draw(20, app.screen.y - 360, f'Energy: {int(playerSc.energyCount)}', (0, 123, 255))
+		app.activeScene.font40.draw(20, app.screen.y - 360, f'Energy: {playerSc.energyCount:.2f}', (0, 123, 255))
 		app.activeScene.font40.draw(20, app.screen.y - 432, f'Timber: {int(playerSc.timberCount)}', (123, 63, 0))
+		
+		if app.activeScene.boss.GetState() == GameObject.State.Alive:
+			from framework.Application import mainCamera
+			from framework.Component.Transform import Transform
+			tr : Transform = app.activeScene.boss.GetComponent(Enums.ComponentType.Transform)
+			sc : BossScript = app.activeScene.boss.GetComponent(Enums.ComponentType.Script)
+			pos = mainCamera.CalculatePosition(tr.GetPosition())
+			app.activeScene.font20.draw(pos.x - 20, pos.y + 40
+			                            , f'{sc.health:.0f}', (255, 0, 0))
+			
 		
 		sc : LumberjackScript = app.activeScene.player.GetComponent(Enums.ComponentType.Script)
 		sp : Sprite = app.activeScene.player.GetComponent(Enums.ComponentType.Sprite)
@@ -36,7 +49,6 @@ class UIScript(Script):
 				and sp.name == 'Lumberjack'
 				and inputManager.GetKey('e')
 		):
-			from framework.Application import app
 			from framework.Application import mainCamera
 			from framework.Component.Transform import Transform
 			tr : Transform = app.activeScene.player.GetComponent(Enums.ComponentType.Transform)

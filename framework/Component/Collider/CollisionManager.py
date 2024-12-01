@@ -114,15 +114,28 @@ class CollisionManager:
 		elif ((leftType == Enums.ColliderType.Box2D and rightType == Enums.ColliderType.Circle) or
 				(Enums.ColliderType.Circle and rightType == Enums.ColliderType.Box2D)):
 			circleCenter : Vector2 = rightPosition if leftType == Enums.ColliderType.Box2D else leftPosition
+			radius : Vector2 = min(rightSize.x, rightSize.y) / 2.0 if leftType == Enums.ColliderType.Box2D else  min(leftSize.x, leftSize.y) / 2.0
 			boxPosition : Vector2 = leftPosition if leftType == Enums.ColliderType.Box2D else rightPosition
-			boxHalfSize : Vector2 = leftSize / 2 if leftType == Enums.ColliderType.Box2D else rightSize / 2
-
-			boxRightBottom : Vector2 = boxPosition + boxHalfSize + (rightSize / 2.0)
-			boxLeftTop : Vector2 = boxPosition - boxHalfSize - (rightSize / 2.0)
-
-			if (boxLeftTop.x < circleCenter.x < boxRightBottom.x and
-					boxLeftTop.y < circleCenter.y < boxRightBottom.y):
-				return True
+			boxHalfSize : Vector2 = leftSize / 2 if leftType == Enums.ColliderType.Box2D else rightSize / 2.0
+			
+			boxRightTop : Vector2 = boxPosition + boxHalfSize
+			boxLeftBottom : Vector2 = boxPosition - boxHalfSize
+			if (boxLeftBottom.x < circleCenter.x < boxRightTop.x and
+						boxLeftBottom.y < circleCenter.y < boxRightTop.y):
+				bixBoxRightTop : Vector2 = (boxPosition + boxHalfSize + radius)
+				bigBoxLeftBottom : Vector2 = (boxPosition - boxHalfSize - radius)
+				if (bigBoxLeftBottom.x < circleCenter.x < bixBoxRightTop.x and
+						bigBoxLeftBottom.y < circleCenter.y < bixBoxRightTop.y):
+					return True
+			else:
+				p1 : Vector2 = Vector2(boxLeftBottom.x, boxRightTop.y)
+				p2 : Vector2 = Vector2(boxRightTop.x, boxRightTop.y)
+				p3 : Vector2 = Vector2(boxLeftBottom.x, boxLeftBottom.y)
+				p4 : Vector2 = Vector2(boxRightTop.x, boxLeftBottom.y)
+				if (p1.x - circleCenter.x) ** 2 + (p1.y - circleCenter.y) ** 2 < radius ** 2: return True
+				if (p2.x - circleCenter.x) ** 2 + (p2.y - circleCenter.y) ** 2 < radius ** 2: return True
+				if (p3.x - circleCenter.x) ** 2 + (p3.y - circleCenter.y) ** 2 < radius ** 2: return True
+				if (p4.x - circleCenter.x) ** 2 + (p4.y - circleCenter.y) ** 2 < radius ** 2: return True
 
 		return False
 

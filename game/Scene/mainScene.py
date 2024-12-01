@@ -8,13 +8,14 @@ from framework.Common import Object, Enums
 from framework.Common.Timer import timer
 from framework.Component.Camera import Camera
 from framework.Component.Collider.CollisionManager import CollisionManager
-from framework.Component.Component import Component
 from framework.Component.Sprite import Sprite
 from framework.Component.Transform import Transform
 from framework.GameObject.GameObject import GameObject
 from framework.Scene import Scene
 from game.Script.LumberjackScript import LumberjackScript
-from game.Script.MonsterScripts import ZombieScript, WarthogScript
+from game.Script.MonsterScripts import ZombieScript, WarthogScript, BossScript
+from game.Script.MonsterScripts import Move as MonsterMove
+from game.Script.LumberjackScript import Move as PlayerMove
 from game.Script.SuppliesScript import TomatoScript, MedikitScript, TreeScript, GeneratorScript
 from game.Script.UIScript import UIScript
 
@@ -24,17 +25,25 @@ class MainScene(Scene.Scene):
 		self.player : GameObject = None
 		self.zombies : list[GameObject] = []
 		self.warthogs : list[GameObject] = []
+		self.boss : GameObject = None
 		self.enemyGenTimer : Vector2 = Vector2(0, 6.0)
+		self.bossGenTimer : Vector2 = Vector2(0, 300.0)
+		self.bossHighlightTimer : Vector2 = Vector2(0, 5.0)
 		# 50 MPM(mob per minute) -> bossTimer == 10 minute -> (50 * 0.2 = 10) * 10 = 100 -> 100 * 0.1 = 10 energy
-		self.suppliesGenTimer : Vector2 = Vector2(0, 10.0)
-		self.font20 : Font = load_font('game/resource/ThornFont.ttf', 20)
-		self.font40 : Font = load_font('game/resource/ThornFont.ttf', 40)
-		self.font72 : Font = load_font('game/resource/ThornFont.ttf', 72)
+		self.suppliesGenTimer : Vector2 = Vector2(1.1, 1.0)
+		self.font20 : Font = load_font('game/resource/establishThornFont.ttf', 20)
+		self.font40 : Font = load_font('game/resource/establishThornFont.ttf', 40)
+		self.font72 : Font = load_font('game/resource/establishThornFont.ttf', 72)
 		pass
 	
 	def Update(self):
 		self.genEnemy()
-		
+		if self.bossHighlightTimer.x >= self.bossHighlightTimer.y:
+			from framework import Application
+			Application.mainCamera.SetTarget(self.player)
+			MonsterMove.isNotBossHighlight = 1
+			PlayerMove.isNotBossHighlight = 1
+		else: self.bossHighlightTimer.x += timer.GetDeltaTime()
 		"""
 		Hungry Warning Point 50 (50 -> player Speed <= Monster Speed)
 		10 tmt/m
@@ -91,7 +100,7 @@ class MainScene(Scene.Scene):
 					sc : TreeScript = tree.AddComponent(TreeScript); sc.Init()
 					
 			special = randint(1, 10000)
-			if special <= 10000:
+			if special <= 625:
 				generator = Object.Instantiate(GameObject, Enums.LayerType.Supplies, Vector2(
 					randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
 					, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y)))))
@@ -99,6 +108,7 @@ class MainScene(Scene.Scene):
 	
 	def genEnemy(self):
 		self.enemyGenTimer.x += timer.GetDeltaTime()
+		self.bossGenTimer.x += timer.GetDeltaTime()
 		if self.enemyGenTimer.x >= self.enemyGenTimer.y:
 			self.enemyGenTimer.x = 0.0
 			for _ in range(5):
@@ -127,6 +137,24 @@ class MainScene(Scene.Scene):
 				)
 				
 				enemy.SetState(GameObject.State.Alive)
+		
+		if self.bossGenTimer.x >= self.bossGenTimer.y and self.boss.GetState() == GameObject.State.Paused:
+			sc: BossScript = self.boss.GetComponent(Enums.ComponentType.Script)
+			sc.Regen()
+			tr: Transform = self.boss.GetComponent(Enums.ComponentType.Transform)
+			playerTr: Transform = self.player.GetComponent(Enums.ComponentType.Transform)
+			minPos = playerTr.GetPosition() - app.screen
+			maxPos = playerTr.GetPosition() + app.screen
+			tr.SetPosition(Vector2(
+				randint(max(-700, int(minPos.x)), min(1500, int(maxPos.x)))
+				, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y))))
+			)
+			self.boss.SetState(GameObject.State.Alive)
+			from framework import Application
+			Application.mainCamera.SetTarget(self.boss)
+			self.bossHighlightTimer.x = 0.0
+			MonsterMove.isNotBossHighlight = 0
+			PlayerMove.isNotBossHighlight = 0
 	
 	def LateUpdate(self):
 		super().LateUpdate()
@@ -145,10 +173,12 @@ class MainScene(Scene.Scene):
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Enemy, Enums.LayerType.AttackTrigger, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Enemy, Enums.LayerType.Player, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.EnemyAttackTrigger, True)
+		CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.BossSpecialAttackTrigger, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.Supplies, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.AttackTrigger, Enums.LayerType.Tree, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Enemy, Enums.LayerType.Obstacle, True)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Obstacle, Enums.LayerType.EnemyAttackTrigger, True)
+		CollisionManager.CollisionLayerCheck(Enums.LayerType.Obstacle, Enums.LayerType.BossSpecialAttackTrigger, True)
 		
 		ui : GameObject = Object.Instantiate(GameObject, Enums.LayerType.UI); ui.AddComponent(UIScript)
 		
@@ -190,6 +220,10 @@ class MainScene(Scene.Scene):
 			sc : ZombieScript = warthog.AddComponent(WarthogScript); sc.Init()
 			warthog.SetState(GameObject.State.Paused)
 			self.warthogs.append(warthog)
+		
+		self.boss = Object.Instantiate(GameObject, Enums.LayerType.Enemy, Vector2())
+		sc : BossScript = self.boss.AddComponent(BossScript); sc.Init()
+		self.boss.SetState(GameObject.State.Paused)
 		
 		pass
 	

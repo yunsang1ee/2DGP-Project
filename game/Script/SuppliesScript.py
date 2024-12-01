@@ -233,6 +233,33 @@ class TreeScript(SuppliesScript):
 	
 	def OnCollisionExit(self, other: 'Collider'):
 		pass
+	
+class BoxScript(SuppliesScript):
+	def __init__(self):
+		super().__init__()
+		pass
+	
+	def Init(self):
+		pass
+	
+	def Update(self):
+		pass
+	
+	def LateUpdate(self):
+		pass
+	
+	def Render(self):
+		pass
+	
+	def OnCollisionEnter(self, other: 'Collider'):
+		pass
+	
+	def OnCollisionStay(self, other: 'Collider'):
+		pass
+	
+	def OnCollisionExit(self, other: 'Collider'):
+		pass
+
 
 class EnergyEggScript(SuppliesScript):
 	def __init__(self):
@@ -260,7 +287,7 @@ class EnergyEggScript(SuppliesScript):
 				sc = sphere.AddComponent(EnergyScript); sc.Init()
 				cd : CircleCollider = sphere.AddComponent(CircleCollider)
 				cd.SetOffset(Vector2(0, -16))
-				cd.SetSize(Vector2(0.15, 0.15))
+				cd.SetSize(Vector2(0.3, 0.3))
 				Object.Destroy(self.GetOwner())
 		else:
 			self.spawnSphereTimer.x += timer.GetDeltaTime()
@@ -317,8 +344,13 @@ class EnergyScript(SuppliesScript):
 		if otherObj.GetLayer() == Enums.LayerType.Player:
 			from game.Script.LumberjackScript import LumberjackScript
 			sc : LumberjackScript = otherObj.GetComponent(Enums.ComponentType.Script)
-			sc.energyCount += 1
 			sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+			if sp.name == 'Lumberjack':
+				sc.energyCount += 1
+			else:
+				energyToHealth = min(100.0 - sc.health, 20)
+				sc.health += energyToHealth
+				sc.energyCount += max((20.0 - energyToHealth) / 20.0, 0.0)
 			sp.SetAction('touched')
 		pass
 	
