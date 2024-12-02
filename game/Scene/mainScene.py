@@ -28,7 +28,7 @@ class MainScene(Scene.Scene):
 		self.boss : GameObject = None
 		self.enemyGenTimer : Vector2 = Vector2(0, 6.0)
 		self.bossGenTimer : Vector2 = Vector2(0, 300.0)
-		self.bossHighlightTimer : Vector2 = Vector2(0, 5.0)
+		self.bossHighlightTimer : Vector2 = Vector2(0, 3.0)
 		# 50 MPM(mob per minute) -> bossTimer == 10 minute -> (50 * 0.2 = 10) * 10 = 100 -> 100 * 0.1 = 10 energy
 		self.suppliesGenTimer : Vector2 = Vector2(11.0, 10.0)
 		self.font20 : Font = load_font('game/resource/establishThornFont.ttf', 20)
@@ -38,6 +38,8 @@ class MainScene(Scene.Scene):
 	
 	def Update(self):
 		self.genEnemy()
+		
+		
 		if self.bossHighlightTimer.x >= self.bossHighlightTimer.y:
 			from framework import Application
 			Application.mainCamera.SetTarget(self.player)
@@ -111,7 +113,7 @@ class MainScene(Scene.Scene):
 		self.bossGenTimer.x += timer.GetDeltaTime()
 		if self.enemyGenTimer.x >= self.enemyGenTimer.y:
 			self.enemyGenTimer.x = 0.0
-			for _ in range(5):
+			for _ in range(3):
 				special = randint(1, 10000)
 				enemy: GameObject = None
 				sc = None
@@ -214,7 +216,7 @@ class MainScene(Scene.Scene):
 		# 	, randint(max(-500, int(minPos.y)), min(1100, int(maxPos.y))))
 		# )
 		# enemy.SetState(GameObject.State.Alive)
-		#
+
 		for _ in range(30):
 			warthog : GameObject = Object.Instantiate(GameObject, Enums.LayerType.Enemy, Vector2())
 			sc : ZombieScript = warthog.AddComponent(WarthogScript); sc.Init()

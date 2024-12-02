@@ -97,6 +97,7 @@ class Move(State):
 	def exit(own: GameObject, event: Tuple[str, int | str]):
 		sc : MonsterScript = own.GetComponent(Enums.ComponentType.Script)
 		sc.randMoveDir = None
+		sc.randMoveTimer.x = 0.0
 		pass
 	
 	@staticmethod
@@ -104,7 +105,11 @@ class Move(State):
 		sc : MonsterScript = own.GetComponent(Enums.ComponentType.Script)
 		tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
-		
+		if sc.inObstacle:
+			if sc.prevPos:
+				undoDelta = (sc.prevPos - tr.GetPosition()).normalize() * sc.speed * timer.GetDeltaTime() * Move.isNotBossHighlight
+				tr.SetPosition(sc.prevPos + undoDelta)
+			return
 		from framework.Application import app
 		playerPos : Vector2 = app.activeScene.player.GetComponent(Enums.ComponentType.Transform).GetPosition()
 		myPos : Vector2 = tr.GetPosition()
@@ -114,27 +119,22 @@ class Move(State):
 			if distVec.length() <= sc.speed * (10.0 if sp.name != "Boss" else 10000.0):
 				if playerPos.x < myPos.x: sp.SetAllFlip('h')
 				else: sp.SetAllFlip('')
+				sc.prevPos = myPos
 				tr.SetPosition(myPos + distVec.normalize() * sc.speed * timer.GetDeltaTime() * Move.isNotBossHighlight)
 			else:
 				sc.statemachine.add_event(('PlayerMissing', 0))
 		else:
 			sc.randMoveTimer.x += timer.GetDeltaTime() * Move.isNotBossHighlight
 			if sc.randMoveTimer.x >= sc.randMoveTimer.y:
-				sc.randMoveTimer.x = 0.0
 				sc.randMoveTimer.y = random.uniform(0.5, 2.0)
 				sc.statemachine.add_event(('PlayerMissing', 0))
 			else:
 				nextPos = myPos + sc.randMoveDir.normalize() * sc.speed * timer.GetDeltaTime() * Move.isNotBossHighlight
-				if sc.inObstacle:
-					tr.SetPosition(sc.prevPos)
-					sc.statemachine.add_event(('PlayerFound', False))
-				else:
-					sc.prevPos = myPos
-					tr.SetPosition(nextPos)
-					myPos = tr.GetPosition()
-					if (playerPos - myPos).length() <= sc.speed * 10.0 if sp.name != "Boss" else 10000.0:
-						sc.randMoveTimer.x = 0.0
-						sc.statemachine.add_event(('PlayerFound', True))
+				sc.prevPos = myPos
+				tr.SetPosition(nextPos)
+				myPos = tr.GetPosition()
+				if (playerPos - myPos).length() <= sc.speed * 10.0 if sp.name != "Boss" else 10000.0:
+					sc.statemachine.add_event(('PlayerFound', True))
 					
 		pass
 	
@@ -178,7 +178,8 @@ class Attack(State):
 			sc.attackTrigger = True
 			if hasattr(sc, 'attackCircleTrigger') and sp.curAction == 'special2': Object.Destroy(sc.attackCircleTrigger)
 		if sp.action[sp.curAction].isComplete:
-			sc.statemachine.add_event(('EndAnimation', 0))
+			if ('EndAnimation', 0) not in sc.statemachine.event_que:
+				sc.statemachine.add_event(('EndAnimation', 0))
 		elif (sp.action[sp.curAction].curFrame > (sp.action[sp.curAction].frameCount // 2 if sp.curAction != "special2" else 11)
 		      and sc.attackTrigger is None):
 			tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
@@ -280,6 +281,7 @@ class ZombieScript(MonsterScript):
 	
 	def Update(self):
 		self.statemachine.Update()
+		self.inObstacle = False
 		pass
 	
 	def LateUpdate(self):
@@ -294,21 +296,24 @@ class ZombieScript(MonsterScript):
 		if otherObj.GetLayer() == Enums.LayerType.AttackTrigger and self.statemachine.cur_state is not Damaged:
 			self.health -= otherObj.damage
 			self.statemachine.add_event(('Damaged', self.health))
-		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
-			self.inObstacle = True
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
 		otherObj : GameObject | AttackTrigger = other.GetOwner()
-		if (otherObj.GetLayer() == Enums.LayerType.Player
-				or (otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is None)):
-			self.statemachine.add_event(('Reached', 0))
+		if otherObj.GetLayer() in (Enums.LayerType.Player, Enums.LayerType.Obstacle):
+			if otherObj.GetLayer() == Enums.LayerType.Obstacle:
+				tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
+				sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+				otherTr : Transform = otherObj.GetComponent(Enums.ComponentType.Transform)
+				flip : str = ''
+				if tr.GetPosition().x - otherTr.GetPosition().x > 0: flip = 'h'
+				sp.SetAllFlip(flip)
+				self.inObstacle = True
+			if ('Reached', 0) not in self.statemachine.event_que:
+				self.statemachine.add_event(('Reached', 0))
 		pass
 	
 	def OnCollisionExit(self, other: 'Collider'):
-		otherObj : GameObject | AttackTrigger = other.GetOwner()
-		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
-			self.inObstacle = False
 		pass
 
 	def Init(self):
@@ -342,7 +347,7 @@ class ZombieScript(MonsterScript):
 					playerMissing: Idle, playerFound: Move, reached: Attack, damaged: Damaged
 				},
 				Attack: {
-					endAnimation: Idle, playerFound: Move, damaged: Damaged
+					endAnimation: Idle, damaged: Damaged
 				},
 				Damaged: {
 					endAnimation: Idle

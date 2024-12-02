@@ -334,10 +334,10 @@ class LumberjackScript(Script):
 		self.hungry : float = 100.0
 		# self.isVenom : bool = False
 		
-		self.medikitCount : int = 0
-		self.tomatoCount : int = 0
+		self.medikitCount : int = 1
+		self.tomatoCount : int = 2
 		
-		self.timberCount : int = 510
+		self.timberCount : int = 30
 		
 		self.energyCount : int = 0
 		self.generateReached : bool = False

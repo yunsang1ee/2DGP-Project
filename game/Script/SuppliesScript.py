@@ -236,7 +236,7 @@ class TreeScript(SuppliesScript):
 class BoxScript(SuppliesScript):
 	def __init__(self):
 		super().__init__()
-		self.health : float = 50.0
+		self.health : float = 55.0
 		self.damagedTimer : Vector2 = Vector2(1.1, 1.0)
 		pass
 	
@@ -269,15 +269,16 @@ class BoxScript(SuppliesScript):
 	
 	def OnCollisionEnter(self, other: 'Collider'):
 		otherObj = other.GetOwner()
-		if otherObj.GetLayer() in (Enums.LayerType.EnemyAttackTrigger, Enums.LayerType.EnemyAttackTrigger)\
+		if otherObj.GetLayer() in (Enums.LayerType.EnemyAttackTrigger, Enums.LayerType.BossSpecialAttackTrigger)\
 			and self.damagedTimer.x >= self.damagedTimer.y:
 			sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
 			sp.image.opacify(0.7)
-			#self.damagedTimer.x = 0.0
+			self.damagedTimer.x = 0.0
 			self.health -= otherObj.damage
-			print(self.health)
 			if self.health <= 0:
 				Object.Destroy(self.GetOwner())
+			else:
+				sp.action[sp.curAction].curFrame = (100 - ((self.health / 50) * 100)) * 9 // 100
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
