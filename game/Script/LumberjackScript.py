@@ -329,6 +329,7 @@ class LumberjackScript(Script):
 	def __init__(self):
 		super().__init__()
 		self.swapSprite : Sprite = None
+		self.isGodMode : bool = False
 		
 		self.health : float = 100.0
 		self.hungry : float = 100.0
@@ -351,7 +352,7 @@ class LumberjackScript(Script):
 		elif inputDown('a') : self.statemachine.add_event(('InputDown', 'a'))
 		elif inputDown('d') : self.statemachine.add_event(('InputDown', 'd'))
 		elif inputDown('s') : self.statemachine.add_event(('InputDown', 's'))
-		
+		elif inputDown('`') : self.isGodMode = not self.isGodMode; print(f'I\'m God: {self.isGodMode}')
 		if inputManager.GetKeyUp('e'): self.evolutionTimer.x = 0.0
 		
 		if inputDown(inputManager.kMouseLeft):
@@ -391,6 +392,7 @@ class LumberjackScript(Script):
 		pass
 	
 	def OnCollisionEnter(self, other: 'Collider'):
+		if self.isGodMode: return
 		otherObj = other.GetOwner()
 		if otherObj.GetLayer() == Enums.LayerType.EnemyAttackTrigger and self.statemachine.cur_state is not Damaged:
 			self.health -= otherObj.damage

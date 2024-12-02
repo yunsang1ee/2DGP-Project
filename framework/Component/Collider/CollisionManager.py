@@ -122,8 +122,8 @@ class CollisionManager:
 			boxLeftBottom : Vector2 = boxPosition - boxHalfSize
 			if (boxLeftBottom.x < circleCenter.x < boxRightTop.x and
 						boxLeftBottom.y < circleCenter.y < boxRightTop.y):
-				bixBoxRightTop : Vector2 = (boxPosition + boxHalfSize + radius)
-				bigBoxLeftBottom : Vector2 = (boxPosition - boxHalfSize - radius)
+				bixBoxRightTop : Vector2 = boxPosition + boxHalfSize + radius * Vector2(1, 1)
+				bigBoxLeftBottom : Vector2 = boxPosition - boxHalfSize - radius * Vector2(1, 1)
 				if (bigBoxLeftBottom.x < circleCenter.x < bixBoxRightTop.x and
 						bigBoxLeftBottom.y < circleCenter.y < bixBoxRightTop.y):
 					return True
