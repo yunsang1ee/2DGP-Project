@@ -384,7 +384,8 @@ class EnergyScript(SuppliesScript):
 			from game.Script.LumberjackScript import LumberjackScript
 			sc : LumberjackScript = otherObj.GetComponent(Enums.ComponentType.Script)
 			sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
-			if sp.name == 'Lumberjack':
+			otherSp : Sprite = other.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+			if otherSp.name == 'Lumberjack':
 				sc.energyCount += 1
 			else:
 				energyToHealth = min(100.0 - sc.health, 20)

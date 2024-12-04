@@ -188,6 +188,7 @@ class Attack(State):
 		      and sc.attackTrigger is None):
 			tr : Transform = own.GetComponent(Enums.ComponentType.Transform)
 			size : Vector2 = Vector2(0.3, 0.62) if sp.curAction != 'special2' else Vector2(3, 1)
+			if sp.curAction != 'special2' and sp.name == 'Boss': size = size * 2.0
 			offset : Vector2 = Vector2(30, 0) if sp.curAction != 'special2' else Vector2(0, -56)
 			offsetFactor : float = 1 if sp.action[sp.curAction].flip == '' else -1
 			triggerPosition : Vector2 = tr.GetPosition() + Vector2(offset.x * offsetFactor, offset.y)
@@ -230,11 +231,14 @@ class Damaged(State):
 				if sp.name == 'Boss': sp.SetOffset(Vector2(1, 16))
 		else:
 			sp.SetAction('idle')
+			sp.SetActionSpeed('idle', sp.action[sp.curAction].frameCount * 5)
 			sp.image.opacify(0.7)
 		pass
 	
 	@staticmethod
 	def exit(own: GameObject, event: Tuple[str, int | str]):
+		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
+		sp.SetActionSpeed('idle', 5)
 		pass
 	
 	@staticmethod

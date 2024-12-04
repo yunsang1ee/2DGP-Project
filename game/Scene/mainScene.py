@@ -1,3 +1,4 @@
+import math
 from random import randint
 
 from pico2d import *
@@ -27,7 +28,7 @@ class MainScene(Scene.Scene):
 		self.warthogs : list[GameObject] = []
 		self.boss : GameObject = None
 		self.enemyGenTimer : Vector2 = Vector2(0, 6.0)
-		self.bossGenTimer : Vector2 = Vector2(0, 3.0)
+		self.bossGenTimer : Vector2 = Vector2(0, 300.0)
 		self.bossHighlightTimer : Vector2 = Vector2(0, 3.0)
 		# 50 MPM(mob per minute) -> bossTimer == 10 minute -> (50 * 0.2 = 10) * 10 = 100 -> 100 * 0.1 = 10 energy
 		self.suppliesGenTimer : Vector2 = Vector2(11.0, 10.0)
@@ -74,7 +75,7 @@ class MainScene(Scene.Scene):
 		if self.suppliesGenTimer.x >= self.suppliesGenTimer.y:
 			self.suppliesGenTimer.x = 0.0
 			special = randint(1, 10000)
-			count = math.ceil(special / 3333)
+			count = math.floor(special / 3333)
 			
 			playerTr: Transform = self.player.GetComponent(Enums.ComponentType.Transform)
 			minPos = playerTr.GetPosition() - app.screen

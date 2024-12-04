@@ -25,7 +25,7 @@ class UIScript(Script):
 		playerSc : LumberjackScript = scene.player.GetComponent(Enums.ComponentType.Script)
 		app.activeScene.font40.draw(app.screen.x // 2, app.screen.y - 72, f'RunTime: {int(timer.runTime)}', (0, 0, 255))
 		app.activeScene.font40.draw(20, app.screen.y - 72, f'HP: {playerSc.health:.2f}', (255, 0, 0))
-		app.activeScene.font40.draw(20, app.screen.y - 144, f'HUN: {int(playerSc.hungry)}', (253, 126, 20))
+		app.activeScene.font40.draw(20, app.screen.y - 144, f'Hungry: {int(playerSc.hungry)}', (253, 126, 20))
 		app.activeScene.font40.draw(20, app.screen.y - 216, f'Tomato: {int(playerSc.tomatoCount)}', (220, 50, 69))
 		app.activeScene.font40.draw(20, app.screen.y - 288, f'Medikit: {int(playerSc.medikitCount)}', (255, 193, 7))
 		app.activeScene.font40.draw(20, app.screen.y - 360, f'Energy: {playerSc.energyCount:.2f}', (0, 123, 255))

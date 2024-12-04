@@ -45,6 +45,7 @@ class Idle(State):
 	def enter(own, event):
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		sp.SetAction('idle')
+		sp.SetActionSpeed('idle', 5)
 		if event[0] == 'NotMove':
 			Idle.onKey = event[1]
 		pass
@@ -222,6 +223,7 @@ class Attack(State):
 			if (sp.name == 'Juggernaut') and (sp.curAction == 'attackCritical'):
 				tr: Transform = own.GetComponent(Enums.ComponentType.Transform)
 				cd: BoxCollider2D = own.GetComponent(Enums.ComponentType.Collider)
+				sp.SetOffset(Vector2((36 if sp.action[sp.curAction].flip == '' else -34), 15)* sp.action[sp.curAction].curFrame / 8.0)
 				tr.SetPosition(Attack.enterPos
 				               + (Vector2(cd.GetSize().x * (-110 if sp.action[sp.curAction].flip == '' else 110), 6)
 				               * sp.action[sp.curAction].curFrame / 8.0))
@@ -245,7 +247,7 @@ class Attack(State):
 
 class Damaged(State):
 	deathTimer : Vector2 = Vector2(0, 2.0)
-	damagedTimer : Vector2 = Vector2(0.6, 0.5)
+	damagedTimer : Vector2 = Vector2(0.6, 0.25)
 	@staticmethod
 	def enter(own: GameObject, event: Tuple[str, int | str]):
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
@@ -262,6 +264,7 @@ class Damaged(State):
 					return
 		else:
 			sp.SetAction('idle')
+			sp.SetActionSpeed('idle',10)
 		CollisionManager.CollisionLayerCheck(Enums.LayerType.Player, Enums.LayerType.EnemyAttackTrigger, False)
 		Damaged.damagedTimer.x = 0.0
 		sp.image.opacify(0.7)
@@ -357,7 +360,7 @@ class LumberjackScript(Script):
 		
 		self.attackSound = load_wav("./resource/LumberAttack.wav")
 		self.critSound = load_wav("./resource/LumberCrit.wav")
-		self.juggerAttackSound = load_wav("./resource/JuggerAttack.wav")
+		self.juggerAttackSound = load_wav("./resource/JuggerAttack.wav"); self.juggerAttackSound.set_volume(32)
 		self.juggerCritSound = load_wav("./resource/JuggerCrit.wav")
 	
 	def Update(self):
