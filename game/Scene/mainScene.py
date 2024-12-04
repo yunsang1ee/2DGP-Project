@@ -31,9 +31,9 @@ class MainScene(Scene.Scene):
 		self.bossHighlightTimer : Vector2 = Vector2(0, 3.0)
 		# 50 MPM(mob per minute) -> bossTimer == 10 minute -> (50 * 0.2 = 10) * 10 = 100 -> 100 * 0.1 = 10 energy
 		self.suppliesGenTimer : Vector2 = Vector2(11.0, 10.0)
-		self.font20 : Font = load_font('game/resource/establishThornFont.ttf', 20)
-		self.font40 : Font = load_font('game/resource/establishThornFont.ttf', 40)
-		self.font72 : Font = load_font('game/resource/establishThornFont.ttf', 72)
+		self.font20 : Font = load_font('./resource/establishThornFont.ttf', 20)
+		self.font40 : Font = load_font('./resource/establishThornFont.ttf', 40)
+		self.font72 : Font = load_font('./resource/establishThornFont.ttf', 72)
 		pass
 	
 	def Update(self):
@@ -185,7 +185,7 @@ class MainScene(Scene.Scene):
 		ui : GameObject = Object.Instantiate(GameObject, Enums.LayerType.UI); ui.AddComponent(UIScript)
 		
 		background : GameObject = Object.Instantiate(GameObject, Enums.LayerType.BackGround, app.screen // 2)
-		background.bgm = load_music('game/resource/BackgroundSound.wav')
+		background.bgm = load_music('./resource/BackgroundSound.wav')
 		background.bgm.set_volume(32)
 		background.bgm.repeat_play()
 		sp : Sprite = background.AddComponent(Sprite)

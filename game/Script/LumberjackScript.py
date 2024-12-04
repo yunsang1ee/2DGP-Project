@@ -355,10 +355,10 @@ class LumberjackScript(Script):
 		
 		self.statemachine : StateMachine = None
 		
-		self.attackSound = load_wav("game/resource/LumberAttack.wav")
-		self.critSound = load_wav("game/resource/LumberCrit.wav")
-		self.juggerAttackSound = load_wav("game/resource/JuggerAttack.wav")
-		self.juggerCritSound = load_wav("game/resource/JuggerCrit.wav")
+		self.attackSound = load_wav("./resource/LumberAttack.wav")
+		self.critSound = load_wav("./resource/LumberCrit.wav")
+		self.juggerAttackSound = load_wav("./resource/JuggerAttack.wav")
+		self.juggerCritSound = load_wav("./resource/JuggerCrit.wav")
 	
 	def Update(self):
 		inputDown = inputManager.GetKeyDown
@@ -413,7 +413,6 @@ class LumberjackScript(Script):
 			self.statemachine.add_event(('Damaged', self.health))
 		if otherObj.GetLayer() == Enums.LayerType.BossSpecialAttackTrigger\
 				and self.statemachine.cur_state is not Damaged:
-			print(f'{LumberjackScript.bossAttackCollision=}')
 			if LumberjackScript.bossAttackCollision:
 				if self.statemachine.cur_state is not Damaged: self.health -= otherObj.damage
 				self.statemachine.add_event(('Damaged', self.health))
@@ -424,6 +423,11 @@ class LumberjackScript(Script):
 		pass
 	
 	def OnCollisionExit(self, other: 'Collider'):
+		otherObj = other.GetOwner()
+		if otherObj.GetLayer() == Enums.LayerType.BossSpecialAttackTrigger\
+				and self.statemachine.cur_state is not Damaged:
+			if LumberjackScript.bossAttackCollision:
+				LumberjackScript.bossAttackCollision = False
 		pass
 	
 	def Init(self):

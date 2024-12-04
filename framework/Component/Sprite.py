@@ -70,7 +70,7 @@ class Sprite(Component):
 	
 	def SetImage(self, path: str):
 		self.name = path[0:path.find('.')]
-		self.image = load_image("game/resource/" + path)
+		self.image = load_image("./resource/" + path)
 		pass
 	
 	def AddAction(self, name : str, frame : float, frameCount : int, frameWidth : int

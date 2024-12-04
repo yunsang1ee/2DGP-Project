@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from random import randint
-from timeit import repeat
 
-from pico2d import load_wav, load_music, Music
+from pico2d import load_wav, Music
 from pygame import Vector2
 
 from framework.Common import Enums, Object
@@ -22,7 +21,7 @@ class SuppliesScript(Script, ABC):
 	itemGetSound : Music = None
 	def __init__(self):
 		super().__init__()
-		if not SuppliesScript.itemGetSound: SuppliesScript.itemGetSound = load_wav('game/resource/itemGet.wav'); SuppliesScript.itemGetSound.set_volume(32)
+		if not SuppliesScript.itemGetSound: SuppliesScript.itemGetSound = load_wav('./resource/itemGet.wav'); SuppliesScript.itemGetSound.set_volume(32)
 		pass
 	
 	@abstractmethod
@@ -194,7 +193,7 @@ class TreeScript(SuppliesScript):
 	def __init__(self):
 		super().__init__()
 		self.count = 3
-		if not TreeScript.damagedSound: TreeScript.damagedSound = load_wav('game/resource/TreeCollision.wav')
+		if not TreeScript.damagedSound: TreeScript.damagedSound = load_wav('./resource/TreeCollision.wav')
 		pass
 	
 	def Init(self):
@@ -249,7 +248,7 @@ class BoxScript(SuppliesScript):
 		super().__init__()
 		self.health : float = 55.0
 		self.damagedTimer : Vector2 = Vector2(1.1, 1.0)
-		if not BoxScript.damagedSound: BoxScript.damagedSound = load_wav('game/resource/TreeCollision.wav'); BoxScript.damagedSound.set_volume(32)
+		if not BoxScript.damagedSound: BoxScript.damagedSound = load_wav('./resource/TreeCollision.wav'); BoxScript.damagedSound.set_volume(32)
 		pass
 	
 	def Init(self):

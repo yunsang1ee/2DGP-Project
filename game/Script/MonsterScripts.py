@@ -291,9 +291,9 @@ class ZombieScript(MonsterScript):
 	def __init__(self):
 		super().__init__(20.0, 30.0, 7.0)
 		self.statemachine : StateMachine = None
-		if not ZombieScript.idleSound: ZombieScript.idleSound = load_wav("game/resource/zombieIdle.wav")
-		if not ZombieScript.attackSound: ZombieScript.attackSound = load_wav("game/resource/LumberAttack.wav"); ZombieScript.attackSound.set_volume(32)
-		if not ZombieScript.damagedSound: ZombieScript.damagedSound = load_wav("game/resource/zombieCollision.wav"); ZombieScript.damagedSound.set_volume(32)
+		if not ZombieScript.idleSound: ZombieScript.idleSound = load_wav("./resource/zombieIdle.wav")
+		if not ZombieScript.attackSound: ZombieScript.attackSound = load_wav("./resource/LumberAttack.wav"); ZombieScript.attackSound.set_volume(32)
+		if not ZombieScript.damagedSound: ZombieScript.damagedSound = load_wav("./resource/zombieCollision.wav"); ZombieScript.damagedSound.set_volume(32)
 		pass
 
 
@@ -391,9 +391,9 @@ class WarthogScript(MonsterScript):
 	def __init__(self):
 		super().__init__(40.0, 30.0, 7.0)
 		self.statemachine : StateMachine = None
-		if not WarthogScript.idleSound: WarthogScript.idleSound = load_wav("game/resource/zombieIdle.wav")
-		if not WarthogScript.attackSound: WarthogScript.attackSound = load_wav("game/resource/LumberAttack.wav"); WarthogScript.attackSound.set_volume(32)
-		if not WarthogScript.damagedSound: WarthogScript.damagedSound = load_wav("game/resource/zombieCollision.wav"); WarthogScript.damagedSound.set_volume(32)
+		if not WarthogScript.idleSound: WarthogScript.idleSound = load_wav("./resource/zombieIdle.wav")
+		if not WarthogScript.attackSound: WarthogScript.attackSound = load_wav("./resource/LumberAttack.wav"); WarthogScript.attackSound.set_volume(32)
+		if not WarthogScript.damagedSound: WarthogScript.damagedSound = load_wav("./resource/zombieCollision.wav"); WarthogScript.damagedSound.set_volume(32)
 		pass
 	
 	def Update(self):
@@ -490,10 +490,10 @@ class BossScript(MonsterScript):
 		super().__init__(500.0, 15.0, 15.0)
 		self.statemachine : StateMachine = None
 		self.attackCircleTrigger : AttackTrigger | None = None
-		if not BossScript.idleSound: BossScript.idleSound = load_wav("game/resource/BossIdle.wav"); BossScript.idleSound.set_volume(32)
-		if not BossScript.attackSound: BossScript.attackSound = load_wav("game/resource/JuggerAttack.wav"); BossScript.attackSound.set_volume(32)
-		if not BossScript.critSound: BossScript.critSound = load_wav("game/resource/BossCrit.wav"); BossScript.critSound.set_volume(32)
-		if not BossScript.damagedSound: BossScript.damagedSound = load_wav("game/resource/BossCollision.wav"); BossScript.damagedSound.set_volume(32)
+		if not BossScript.idleSound: BossScript.idleSound = load_wav("./resource/BossIdle.wav"); BossScript.idleSound.set_volume(32)
+		if not BossScript.attackSound: BossScript.attackSound = load_wav("./resource/JuggerAttack.wav"); BossScript.attackSound.set_volume(32)
+		if not BossScript.critSound: BossScript.critSound = load_wav("./resource/BossCrit.wav"); BossScript.critSound.set_volume(32)
+		if not BossScript.damagedSound: BossScript.damagedSound = load_wav("./resource/BossCollision.wav"); BossScript.damagedSound.set_volume(32)
 		pass
 	
 	def Update(self):
