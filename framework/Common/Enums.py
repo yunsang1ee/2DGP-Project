@@ -3,6 +3,7 @@ import enum
 class LayerType(enum.Enum):
     Non = 0
     BackGround = enum.auto()
+    BossSpecialAttackTrigger = enum.auto()
     Obstacle = enum.auto()
     Tree = enum.auto()
     Player = enum.auto()
@@ -11,7 +12,6 @@ class LayerType(enum.Enum):
     Generator = enum.auto()
     AttackTrigger = enum.auto()
     EnemyAttackTrigger = enum.auto()
-    BossSpecialAttackTrigger = enum.auto()
     UI = enum.auto()
     Camera = enum.auto()
     End = enum.auto()

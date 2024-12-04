@@ -27,7 +27,7 @@ class MainScene(Scene.Scene):
 		self.warthogs : list[GameObject] = []
 		self.boss : GameObject = None
 		self.enemyGenTimer : Vector2 = Vector2(0, 6.0)
-		self.bossGenTimer : Vector2 = Vector2(0, 300.0)
+		self.bossGenTimer : Vector2 = Vector2(0, 3.0)
 		self.bossHighlightTimer : Vector2 = Vector2(0, 3.0)
 		# 50 MPM(mob per minute) -> bossTimer == 10 minute -> (50 * 0.2 = 10) * 10 = 100 -> 100 * 0.1 = 10 energy
 		self.suppliesGenTimer : Vector2 = Vector2(11.0, 10.0)
@@ -62,8 +62,8 @@ class MainScene(Scene.Scene):
 			tr : Transform = obj.GetComponent(Enums.ComponentType.Transform)
 			y = tr.GetPosition().y if tr is not None else 0
 			return (layer != Enums.LayerType.BackGround
-			        , layer == Enums.LayerType.UI
-			        , -y)
+					, layer == Enums.LayerType.UI
+					, -y)
 		self.objects.sort(key=function)
 		
 		super().Update()
@@ -185,6 +185,9 @@ class MainScene(Scene.Scene):
 		ui : GameObject = Object.Instantiate(GameObject, Enums.LayerType.UI); ui.AddComponent(UIScript)
 		
 		background : GameObject = Object.Instantiate(GameObject, Enums.LayerType.BackGround, app.screen // 2)
+		background.bgm = load_music('game/resource/BackgroundSound.wav')
+		background.bgm.set_volume(32)
+		background.bgm.repeat_play()
 		sp : Sprite = background.AddComponent(Sprite)
 		sp.SetImage("Background.png")
 		sp.AddAction('background', 0, 1, 1, Vector2(0, 0), Vector2(2400, 1800), '')

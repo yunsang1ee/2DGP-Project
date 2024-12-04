@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from random import randint
 from timeit import repeat
 
+from pico2d import load_wav, load_music, Music
 from pygame import Vector2
 
 from framework.Common import Enums, Object
@@ -13,12 +14,15 @@ from framework.Component.Script import Script
 from framework.Component.Sprite import Sprite
 from framework.Component.Transform import Transform
 from framework.GameObject.GameObject import GameObject
+
 from game.Script.LumberjackScript import LumberjackScript
 
 
 class SuppliesScript(Script, ABC):
+	itemGetSound : Music = None
 	def __init__(self):
 		super().__init__()
+		if not SuppliesScript.itemGetSound: SuppliesScript.itemGetSound = load_wav('game/resource/itemGet.wav'); SuppliesScript.itemGetSound.set_volume(32)
 		pass
 	
 	@abstractmethod
@@ -72,6 +76,7 @@ class MedikitScript(SuppliesScript):
 		if otherObj.GetLayer() == Enums.LayerType.Player and sp.curAction == 'idle':
 			sc : LumberjackScript = otherObj.GetComponent(Enums.ComponentType.Script)
 			sc.medikitCount += 1
+			SuppliesScript.itemGetSound.play()
 			sp.SetAction('touched')
 		pass
 	
@@ -136,6 +141,7 @@ class TomatoScript(SuppliesScript):
 		if otherObj.GetLayer() == Enums.LayerType.Player and sp.curAction == 'idle':
 			sc : LumberjackScript = otherObj.GetComponent(Enums.ComponentType.Script)
 			sc.tomatoCount += 1
+			SuppliesScript.itemGetSound.play()
 			sp.SetAction('touched')
 		pass
 	
@@ -173,6 +179,7 @@ class TimberScript(SuppliesScript):
 		if otherObj.GetLayer() == Enums.LayerType.Player:
 			sc : LumberjackScript = otherObj.GetComponent(Enums.ComponentType.Script)
 			sc.timberCount += 1
+			SuppliesScript.itemGetSound.play()
 			Object.Destroy(self.GetOwner())
 		pass
 	
@@ -183,9 +190,11 @@ class TimberScript(SuppliesScript):
 		pass
 
 class TreeScript(SuppliesScript):
+	damagedSound : Music = None
 	def __init__(self):
 		super().__init__()
 		self.count = 3
+		if not TreeScript.damagedSound: TreeScript.damagedSound = load_wav('game/resource/TreeCollision.wav')
 		pass
 	
 	def Init(self):
@@ -218,6 +227,7 @@ class TreeScript(SuppliesScript):
 		otherObj : GameObject = other.GetOwner()
 		if otherObj.GetLayer() == Enums.LayerType.AttackTrigger:
 			self.count -= 1
+			self.damagedSound.play()
 			if self.count <= 0:
 				for _ in range(randint(2, 3)):
 					tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
@@ -234,10 +244,12 @@ class TreeScript(SuppliesScript):
 		pass
 	
 class BoxScript(SuppliesScript):
+	damagedSound : Music = None
 	def __init__(self):
 		super().__init__()
 		self.health : float = 55.0
 		self.damagedTimer : Vector2 = Vector2(1.1, 1.0)
+		if not BoxScript.damagedSound: BoxScript.damagedSound = load_wav('game/resource/TreeCollision.wav'); BoxScript.damagedSound.set_volume(32)
 		pass
 	
 	def Init(self):
@@ -275,6 +287,7 @@ class BoxScript(SuppliesScript):
 			sp.image.opacify(0.7)
 			self.damagedTimer.x = 0.0
 			self.health -= otherObj.damage
+			BoxScript.damagedSound.play()
 			if self.health <= 0:
 				Object.Destroy(self.GetOwner())
 			else:
@@ -379,6 +392,7 @@ class EnergyScript(SuppliesScript):
 				sc.health += energyToHealth
 				sc.energyCount += max((20.0 - energyToHealth) / 20.0, 0.0)
 			sp.SetAction('touched')
+			SuppliesScript.itemGetSound.play()
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):

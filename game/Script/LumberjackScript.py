@@ -1,6 +1,7 @@
 from random import randint
 from typing import Tuple
 
+from pico2d import Music, load_wav
 from pygame import Vector2
 
 from framework.Common import Enums, Object
@@ -162,9 +163,13 @@ class Attack(State):
 		critical = randint(1, 10000)
 		if critical < sc.hungry * 100 / 2:
 			sp.SetAction('attack')
+			if sp.name == 'Lumberjack': sc.attackSound.play()
+			else: sc.juggerAttackSound.play()
 			sp.SetActionSpeed('attack', int(sc.hungry / 4))
 		else:
 			sp.SetAction('attackCritical')
+			if sp.name == 'Lumberjack': sc.critSound.play()
+			else: sc.juggerCritSound.play()
 			sp.SetActionSpeed('attackCritical', int(sc.hungry / 4))
 			if sp.name == 'Juggernaut':
 				sp.SetOffset(Vector2(0, 20))
@@ -325,6 +330,10 @@ class ItemUse(State):
 		pass
 
 class LumberjackScript(Script):
+	idleSound : Music = None
+	attackSound : Music = None
+	critSound : Music = None
+	damagedSound : Music = None
 	bossAttackCollision : bool = False
 	def __init__(self):
 		super().__init__()
@@ -345,6 +354,11 @@ class LumberjackScript(Script):
 		self.evolutionTimer : Vector2 = Vector2(0.0, 5.0)
 		
 		self.statemachine : StateMachine = None
+		
+		self.attackSound = load_wav("game/resource/LumberAttack.wav")
+		self.critSound = load_wav("game/resource/LumberCrit.wav")
+		self.juggerAttackSound = load_wav("game/resource/JuggerAttack.wav")
+		self.juggerCritSound = load_wav("game/resource/JuggerCrit.wav")
 	
 	def Update(self):
 		inputDown = inputManager.GetKeyDown

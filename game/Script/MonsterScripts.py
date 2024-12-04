@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from random import randint
 from typing import Tuple
 
+from pico2d import load_wav, Music
 from pygame import Vector2
 
 from framework.Common import Enums, Object
@@ -14,6 +15,7 @@ from framework.Component.Script import Script
 from framework.Component.Sprite import Sprite
 from framework.Component.Transform import Transform
 from framework.GameObject.GameObject import GameObject
+
 from game.Script.LumberjackScript import AttackTrigger, LumberjackScript
 from game.Script.SuppliesScript import EnergyEggScript
 
@@ -54,6 +56,7 @@ class Idle(State):
 	@staticmethod
 	def enter(own: GameObject, event: Tuple[str, int | str]):
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
+		sc = own.GetComponent(Enums.ComponentType.Script)
 		sp.SetAction('idle')
 		pass
 	
@@ -72,6 +75,7 @@ class Idle(State):
 		sp : Sprite = own.GetComponent(Enums.ComponentType.Sprite)
 		if (playerPos - myPos).length() <= sc.speed * (10.0 if sp.name != "Boss" else 10000.0):
 			sc.statemachine.add_event(('PlayerFound', True))
+			sc.idleSound.play()
 		elif sc.randMoveTimer.x >= sc.randMoveTimer.y:
 			sc.statemachine.add_event(('PlayerFound', False))
 		pass
@@ -200,9 +204,16 @@ class Attack(State):
 			if sp.curAction == 'special2':
 				sc.attackCircleTrigger = Object.Instantiate(AttackTrigger, Enums.LayerType.BossSpecialAttackTrigger, triggerPosition)
 				sc.attackTrigger.damage = sc.damage * 3
+				aTsp : Sprite = sc.attackCircleTrigger.AddComponent(Sprite)
+				aTsp.SetImage("BossSpecial.png")
+				aTsp.AddAction('d', 0, 1, 1
+		             , Vector2(0, 0), Vector2(297, 99), '', repeat=False)
 				sc.attackCircleTrigger.damage = sc.damage * 3
 				cdC : CircleCollider = sc.attackCircleTrigger.AddComponent(CircleCollider)
 				cdC.SetSize(Vector2(3, 3))
+				sc.critSound.play()
+			else:
+				sc.attackSound.play()
 			pass
 		pass
 
@@ -274,11 +285,18 @@ class MonsterScript(Script, ABC):
 	pass
 
 class ZombieScript(MonsterScript):
+	idleSound = None
+	attackSound = None
+	damagedSound = None
 	def __init__(self):
 		super().__init__(20.0, 30.0, 7.0)
 		self.statemachine : StateMachine = None
-		
-	
+		if not ZombieScript.idleSound: ZombieScript.idleSound = load_wav("game/resource/zombieIdle.wav")
+		if not ZombieScript.attackSound: ZombieScript.attackSound = load_wav("game/resource/LumberAttack.wav"); ZombieScript.attackSound.set_volume(32)
+		if not ZombieScript.damagedSound: ZombieScript.damagedSound = load_wav("game/resource/zombieCollision.wav"); ZombieScript.damagedSound.set_volume(32)
+		pass
+
+
 	def Update(self):
 		self.statemachine.Update()
 		self.inObstacle = False
@@ -295,6 +313,7 @@ class ZombieScript(MonsterScript):
 		
 		if otherObj.GetLayer() == Enums.LayerType.AttackTrigger and self.statemachine.cur_state is not Damaged:
 			self.health -= otherObj.damage
+			ZombieScript.damagedSound.play()
 			self.statemachine.add_event(('Damaged', self.health))
 		pass
 	
@@ -366,13 +385,20 @@ class ZombieScript(MonsterScript):
 	pass
 
 class WarthogScript(MonsterScript):
+	idleSound = None
+	attackSound = None
+	damagedSound = None
 	def __init__(self):
 		super().__init__(40.0, 30.0, 7.0)
 		self.statemachine : StateMachine = None
+		if not WarthogScript.idleSound: WarthogScript.idleSound = load_wav("game/resource/zombieIdle.wav")
+		if not WarthogScript.attackSound: WarthogScript.attackSound = load_wav("game/resource/LumberAttack.wav"); WarthogScript.attackSound.set_volume(32)
+		if not WarthogScript.damagedSound: WarthogScript.damagedSound = load_wav("game/resource/zombieCollision.wav"); WarthogScript.damagedSound.set_volume(32)
 		pass
 	
 	def Update(self):
 		self.statemachine.Update()
+		self.inObstacle = False
 		pass
 	
 	def LateUpdate(self):
@@ -387,21 +413,26 @@ class WarthogScript(MonsterScript):
 		
 		if otherObj.GetLayer() == Enums.LayerType.AttackTrigger and self.statemachine.cur_state is not Damaged:
 			self.health -= otherObj.damage
+			WarthogScript.damagedSound.play()
 			self.statemachine.add_event(('Damaged', self.health))
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
-		from game.Script.LumberjackScript import AttackTrigger
 		otherObj : GameObject | AttackTrigger = other.GetOwner()
-		if (otherObj.GetLayer() == Enums.LayerType.Player
-				or (otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is None)):
-			self.statemachine.add_event(('Reached', 0))
+		if otherObj.GetLayer() in (Enums.LayerType.Player, Enums.LayerType.Obstacle):
+			if otherObj.GetLayer() == Enums.LayerType.Obstacle:
+				tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
+				sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+				otherTr : Transform = otherObj.GetComponent(Enums.ComponentType.Transform)
+				flip : str = ''
+				if tr.GetPosition().x - otherTr.GetPosition().x > 0: flip = 'h'
+				sp.SetAllFlip(flip)
+				self.inObstacle = True
+			if ('Reached', 0) not in self.statemachine.event_que:
+				self.statemachine.add_event(('Reached', 0))
 		pass
 	
 	def OnCollisionExit(self, other: 'Collider'):
-		otherObj : GameObject | AttackTrigger = other.GetOwner()
-		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
-			self.inObstacle = False
 		pass
 	
 	def Init(self):
@@ -432,7 +463,7 @@ class WarthogScript(MonsterScript):
 					playerMissing: Idle, playerFound: Move, reached: Attack, damaged: Damaged
 				},
 				Attack: {
-					endAnimation: Idle, playerFound: Move, damaged: Damaged
+					endAnimation: Idle, damaged: Damaged
 				},
 				Damaged: {
 					endAnimation: Idle
@@ -451,14 +482,23 @@ class WarthogScript(MonsterScript):
 	pass
 
 class BossScript(MonsterScript):
+	idleSound : Music = None
+	attackSound : Music = None
+	critSound : Music = None
+	damagedSound : Music = None
 	def __init__(self):
 		super().__init__(500.0, 15.0, 15.0)
 		self.statemachine : StateMachine = None
 		self.attackCircleTrigger : AttackTrigger | None = None
+		if not BossScript.idleSound: BossScript.idleSound = load_wav("game/resource/BossIdle.wav"); BossScript.idleSound.set_volume(32)
+		if not BossScript.attackSound: BossScript.attackSound = load_wav("game/resource/JuggerAttack.wav"); BossScript.attackSound.set_volume(32)
+		if not BossScript.critSound: BossScript.critSound = load_wav("game/resource/BossCrit.wav"); BossScript.critSound.set_volume(32)
+		if not BossScript.damagedSound: BossScript.damagedSound = load_wav("game/resource/BossCollision.wav"); BossScript.damagedSound.set_volume(32)
 		pass
 	
 	def Update(self):
 		self.statemachine.Update()
+		self.inObstacle = False
 		pass
 	
 	def LateUpdate(self):
@@ -469,27 +509,31 @@ class BossScript(MonsterScript):
 	
 	def OnCollisionEnter(self, other: 'Collider'):
 		otherObj : GameObject | AttackTrigger = other.GetOwner()
-		sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+
 		if (otherObj.GetLayer() == Enums.LayerType.AttackTrigger
-		      and self.statemachine.cur_state is not Damaged
-		      and sp.curAction != 'special2'):
+				and self.statemachine.cur_state is not Damaged
+				and self.GetOwner().GetComponent(Enums.ComponentType.Sprite).curAction != "special2"):
 			self.health -= otherObj.damage
+			BossScript.damagedSound.play()
 			self.statemachine.add_event(('Damaged', self.health))
-		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
-			self.inObstacle = True
 		pass
 	
 	def OnCollisionStay(self, other: 'Collider'):
 		otherObj : GameObject | AttackTrigger = other.GetOwner()
-		if (otherObj.GetLayer() == Enums.LayerType.Player
-				or (otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is None)):
-			self.statemachine.add_event(('Reached', 0))
+		if otherObj.GetLayer() in (Enums.LayerType.Player, Enums.LayerType.Obstacle):
+			if otherObj.GetLayer() == Enums.LayerType.Obstacle:
+				tr : Transform = self.GetOwner().GetComponent(Enums.ComponentType.Transform)
+				sp : Sprite = self.GetOwner().GetComponent(Enums.ComponentType.Sprite)
+				otherTr : Transform = otherObj.GetComponent(Enums.ComponentType.Transform)
+				flip : str = ''
+				if tr.GetPosition().x - otherTr.GetPosition().x > 0: flip = 'h'
+				sp.SetAllFlip(flip)
+				self.inObstacle = True
+			if ('Reached', 0) not in self.statemachine.event_que:
+				self.statemachine.add_event(('Reached', 0))
 		pass
 	
 	def OnCollisionExit(self, other: 'Collider'):
-		otherObj : GameObject | AttackTrigger = other.GetOwner()
-		if otherObj.GetLayer() == Enums.LayerType.Obstacle and self.randMoveDir is not None:
-			self.inObstacle = False
 		pass
 	
 	def Init(self):
@@ -509,7 +553,7 @@ class BossScript(MonsterScript):
 		             , Vector2(65, 2967), Vector2(256, 128), '', 6, False)
 		sp.AddAction('death', 0, 14, 2
 		             , Vector2(65, 774), Vector2(256, 128), '', repeat=False)
-
+		
 		self.statemachine = StateMachine(self.GetOwner(), Idle)
 		self.statemachine.set_transitions(
 			{
@@ -520,7 +564,7 @@ class BossScript(MonsterScript):
 					playerMissing: Idle, playerFound: Move, reached: Attack, damaged: Damaged
 				},
 				Attack: {
-					endAnimation: Idle, playerFound: Move, damaged: Damaged
+					endAnimation: Idle, damaged: Damaged
 				},
 				Damaged: {
 					endAnimation: Idle
